@@ -3,4 +3,36 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="light_Blue">#BBDEFB</color>
+    <color name="dark_Blue">#42A5F5</color>
+    <color name="light_red">#FFCDD2</color>
+    <color name="dark_red">#EF5350</color>
+    <color name="light_green">#C8E6C9</color>
+    <color name="dark_green">#66BB6A</color>
+    <color name="light_yellow">#FFF9C4</color>
+    <color name="dark_yellow">#FFEE58</color>
+    <color name="light_purple">#D1C4E9</color>
+    <color name="dark_purple">#7E57C2</color>
+    <color name="light_orange">#FFE0B2</color>
+    <color name="dark_orange">#FFA726</color>
+
+    <array name="task_light_colors">
+        <item>@color/light_Blue</item>
+        <item>@color/light_red</item>
+        <item>@color/light_green</item>
+        <item>@color/light_yellow</item>
+        <item>@color/light_purple</item>
+        <item>@color/light_orange</item>
+    </array>
+
+    <array name="task_dark_colors">
+        <item>@color/dark_Blue</item>
+        <item>@color/dark_red</item>
+        <item>@color/dark_green</item>
+        <item>@color/dark_yellow</item>
+        <item>@color/dark_purple</item>
+        <item>@color/dark_orange</item>
+    </array>
+
+
 </resources>

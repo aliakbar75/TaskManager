@@ -1,6 +1,5 @@
 package com.example.moein.taskmanager.models;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,8 +8,17 @@ public class Task {
     private String mTitle;
     private String mDescriptions;
     private Date mDate;
-    private Time mTime;
+    private Date mTime;
     private boolean isDone;
+    private int mColor;
+
+    public int getColor() {
+        return mColor;
+    }
+
+    public void setColor(int color) {
+        mColor = color;
+    }
 
     public UUID getId() {
         return mId;
@@ -45,11 +53,11 @@ public class Task {
         mDate = date;
     }
 
-    public Time getTime() {
+    public Date getTime() {
         return mTime;
     }
 
-    public void setTime(Time time) {
+    public void setTime(Date time) {
         mTime = time;
     }
 

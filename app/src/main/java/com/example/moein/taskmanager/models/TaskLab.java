@@ -1,6 +1,8 @@
 package com.example.moein.taskmanager.models;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -16,12 +18,19 @@ public class TaskLab {
         mTasks = new LinkedHashMap<>();
         mDoneTasks = new LinkedHashMap<>();
         mUndoneTasks = new LinkedHashMap<>();
-        Task task = new Task("hello");
-        mTasks.put(task.getId(),task);
     }
 
-    public void addTask(){
+    public String addDescription(String description){
+        return description;
+    }
 
+    public void addTask(String title, String description, Date date, Date time,int color){
+        Task task = new Task(title);
+        task.setDescriptions(description);
+        task.setDate(date);
+        task.setTime(time);
+        task.setColor(color);
+        mTasks.put(task.getId(),task);
     }
 
     public List<Task> getAllTasks() {

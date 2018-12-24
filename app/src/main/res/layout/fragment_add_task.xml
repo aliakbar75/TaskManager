@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AddTaskFragment">
+
+    <EditText
+        android:id="@+id/task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/task_title_hint"
+        android:inputType="" />
+
+    <EditText
+        android:id="@+id/task_description"
+        app:layout_constraintTop_toBottomOf="@+id/task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/task_description_hint"/>
+
+    <EditText
+        android:id="@+id/task_date"
+        app:layout_constraintTop_toBottomOf="@+id/task_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:hint="@string/task_date_hint"/>
+
+    <EditText
+        android:id="@+id/task_time"
+        app:layout_constraintTop_toBottomOf="@+id/task_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:hint="@string/task_time_hint" />
+
+    <Button
+        android:id="@+id/task_save_button"
+        app:layout_constraintTop_toBottomOf="@+id/task_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/task_save_button"/>
+
+    <Button
+        android:id="@+id/task_cancel_button"
+        app:layout_constraintTop_toBottomOf="@+id/task_time"
+        app:layout_constraintLeft_toRightOf="@+id/task_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/task_cancel_button"/>
+
+</android.support.constraint.ConstraintLayout>
