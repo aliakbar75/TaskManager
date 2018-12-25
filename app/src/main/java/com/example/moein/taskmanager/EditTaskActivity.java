@@ -8,28 +8,27 @@ import android.os.Bundle;
 
 import java.util.UUID;
 
-public class TaskDetailsActivity extends AppCompatActivity {
+public class EditTaskActivity extends AppCompatActivity {
 
-    private static final String EXTRA_TASK_ID = "com.example.moein.taskmanager.task_id";
+    public static final String EXTRA_TASK_ID = "com.example.moein.taskmanager.task_id";
 
     public static Intent newIntent(Context context, UUID taskId){
-        Intent intent = new Intent(context,TaskDetailsActivity.class);
+        Intent intent = new Intent(context,EditTaskActivity.class);
         intent.putExtra(EXTRA_TASK_ID,taskId);
         return intent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_details);
+        setContentView(R.layout.activity_edit_task);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         UUID taskId = (UUID) getIntent().getSerializableExtra(EXTRA_TASK_ID);
-        if (fragmentManager.findFragmentById(R.id.task_details_fragment_container) == null){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(fragmentManager.findFragmentById(R.id.edit_task_fragment_container)== null){
             fragmentManager.beginTransaction()
-                    .add(R.id.task_details_fragment_container,TaskDetailsFragment.newInstance(taskId))
+                    .add(R.id.edit_task_fragment_container,EditTaskFragment.newInstance(taskId))
                     .commit();
         }
-
-
     }
 }

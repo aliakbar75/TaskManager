@@ -10,36 +10,46 @@
         android:id="@+id/task_title_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="title"
+        android:text="Title"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="16dp"
+        android:gravity="center_horizontal"
         android:textSize="30sp"/>
+
+    <TextView
+        android:id="@+id/task_description_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_margin"
+        android:textSize="25sp"
+        android:text="Description : "
+        app:layout_constraintTop_toBottomOf="@id/task_title_details"/>
 
     <TextView
         android:id="@+id/task_description_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="des"
+        android:text=""
         android:layout_margin="16dp"
-        android:textSize="25sp"
-        app:layout_constraintTop_toBottomOf="@+id/task_title_details"/>
+        android:textSize="22sp"
+        app:layout_constraintTop_toBottomOf="@+id/task_description_name"/>
 
     <TextView
         android:id="@+id/task_date_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="date"
+        android:text="Date :"
         android:layout_margin="16dp"
-        android:textSize="25sp"
+        android:textSize="22sp"
         app:layout_constraintTop_toBottomOf="@+id/task_description_details"/>
 
     <TextView
         android:id="@+id/task_time_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="time"
+        android:text="Time : "
         android:layout_margin="16dp"
-        android:textSize="25sp"
+        android:textSize="22sp"
         app:layout_constraintTop_toBottomOf="@+id/task_date_details"/>
 
     <Button

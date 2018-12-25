@@ -1,6 +1,7 @@
 package com.example.moein.taskmanager;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.example.moein.taskmanager.models.Task;
 import com.example.moein.taskmanager.models.TaskLab;
 
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 
@@ -21,7 +23,7 @@ import java.util.UUID;
  */
 public class TaskDetailsFragment extends Fragment {
 
-    public static final String ARG_TASK_ID = "task_id";
+    private static final String ARG_TASK_ID = "task_id";
     private Task mTask;
 
     private TextView mTitleTextView;
@@ -68,20 +70,13 @@ public class TaskDetailsFragment extends Fragment {
         mDeleteButton = view.findViewById(R.id.delete_task_button);
         mDoneButton = view.findViewById(R.id.done_task_button);
 
-        mTitleTextView.setText(mTask.getTitle());
-        mDescriptionTextView.setText(mTask.getDescriptions());
-        try {
-            mDateTextView.setText(mTask.getDate().toString());
-            mTimeTextView.setText(mTask.getTime().toString());
-        }catch (Exception e){
-
-        }
 
 
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = EditTaskActivity.newIntent(getActivity(),mTask.getId());
+                startActivity(intent);
             }
         });
 
@@ -103,4 +98,23 @@ public class TaskDetailsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mTitleTextView.setText(mTask.getTitle());
+        mDescriptionTextView.setText(mTask.getDescriptions());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
+
+        try {
+            String formattedDate = simpleDateFormat.format(mTask.getDate());
+            String formattedTime = simpleTimeFormat.format(mTask.getTime());
+            mDateTextView.setText("Date :  " + formattedDate);
+            mTimeTextView.setText("Time :  " + formattedTime);
+        }catch (Exception e){
+
+        }
+    }
 }

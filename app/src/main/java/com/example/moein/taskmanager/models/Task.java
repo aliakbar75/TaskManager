@@ -11,6 +11,15 @@ public class Task {
     private Date mTime;
     private boolean isDone;
     private int mColor;
+    private int mIconColor;
+
+    public int getIconColor() {
+        return mIconColor;
+    }
+
+    public void setIconColor(int iconColor) {
+        mIconColor = iconColor;
+    }
 
     public int getColor() {
         return mColor;

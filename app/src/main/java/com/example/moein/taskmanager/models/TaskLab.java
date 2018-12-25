@@ -24,14 +24,24 @@ public class TaskLab {
         return description;
     }
 
-    public void addTask(String title, String description, Date date, Date time,int color){
+    public void addTask(String title, String description, Date date, Date time,int color, int iconColor){
         Task task = new Task(title);
         task.setDescriptions(description);
         task.setDate(date);
         task.setTime(time);
         task.setColor(color);
+        task.setIconColor(iconColor);
         mTasks.put(task.getId(),task);
         mUndoneTasks.put(task.getId(),task);
+    }
+
+    public void editTask(Task task,String title, String description, Date date, Date time,int color, int iconColor){
+        task.setTitle(title);
+        task.setDescriptions(description);
+        task.setDate(date);
+        task.setTime(time);
+        task.setColor(color);
+        task.setIconColor(iconColor);
     }
 
     public void taskDone(Task task){

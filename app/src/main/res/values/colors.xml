@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="light_Blue">#BBDEFB</color>
-    <color name="dark_Blue">#42A5F5</color>
-    <color name="light_red">#FFCDD2</color>
-    <color name="dark_red">#EF5350</color>
-    <color name="light_green">#C8E6C9</color>
-    <color name="dark_green">#66BB6A</color>
-    <color name="light_yellow">#FFF9C4</color>
-    <color name="dark_yellow">#FFEE58</color>
-    <color name="light_purple">#D1C4E9</color>
-    <color name="dark_purple">#7E57C2</color>
-    <color name="light_orange">#FFE0B2</color>
-    <color name="dark_orange">#FFA726</color>
+    <color name="colorPrimary">#388E3C</color>
+    <color name="colorPrimaryDark">#1B5E20</color>
+    <color name="colorAccent">#2E7D32</color>
+    <color name="light_Blue">#90CAF9</color>
+    <color name="dark_Blue">#2196F3</color>
+    <color name="light_red">#EF9A9A</color>
+    <color name="dark_red">#F44336</color>
+    <color name="light_green">#A5D6A7</color>
+    <color name="dark_green">#4CAF50</color>
+    <color name="light_yellow">#FFF59D</color>
+    <color name="dark_yellow">#FFEB3B</color>
+    <color name="light_purple">#B39DDB</color>
+    <color name="dark_purple">#673AB7</color>
+    <color name="light_orange">#FFCC80</color>
+    <color name="dark_orange">#FF9800</color>
 
     <array name="task_light_colors">
         <item>@color/light_Blue</item>

@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.UUID;
+
 public class AddTaskActivity extends AppCompatActivity {
 
     public static Intent newIntent(Context context){

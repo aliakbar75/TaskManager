@@ -2,6 +2,11 @@ package com.example.moein.taskmanager;
 
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -122,7 +127,8 @@ public class TasksListFragment extends Fragment {
             mTitleTextView.setText(task.getTitle());
             mTaskFirstLetterTextView.setText(mTitleTextView.getText().toString().substring(0,1));
             mItemListLayout.setBackgroundColor(task.getColor());
-//            mTaskFirstLetterTextView.s
+            GradientDrawable background = (GradientDrawable) mTaskFirstLetterTextView.getBackground();
+            background.setColor(task.getIconColor());
         }
     }
 
