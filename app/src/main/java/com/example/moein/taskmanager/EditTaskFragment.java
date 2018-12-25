@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.AndroidException;
 import android.view.LayoutInflater;
@@ -48,6 +49,8 @@ public class EditTaskFragment extends Fragment {
     private Button mCancelButton;
 
     private Spinner mColorSpinner;
+
+    private ConstraintLayout mConstraintLayout;
 
     private TimePickerDialog mTimePickerDialog;
     private DatePickerDialog mDatePickerDialog;
@@ -98,6 +101,7 @@ public class EditTaskFragment extends Fragment {
         mSaveButton = view.findViewById(R.id.task_save_button);
         mCancelButton = view.findViewById(R.id.task_cancel_button);
         mColorSpinner = view.findViewById(R.id.color_spinner);
+        mConstraintLayout = view.findViewById(R.id.add_task_fragment);
 
         mTitleEditText.setText(mTask.getTitle());
         mDescriptionEditText.setText(mTask.getDescriptions());
@@ -124,50 +128,58 @@ public class EditTaskFragment extends Fragment {
         final int[] iconColor = new int[1];
 
         int colorPicked = mTask.getColor();
-        if(colorPicked == getResources().getColor(R.color.light_yellow))
+        if(colorPicked == getResources().getColor(R.color.light_green))
             mColorSpinner.setSelection(0);
         else if(colorPicked == getResources().getColor(R.color.light_Blue))
             mColorSpinner.setSelection(1);
         else if(colorPicked == getResources().getColor(R.color.light_red))
             mColorSpinner.setSelection(2);
-        else if(colorPicked == getResources().getColor(R.color.light_green))
+        else if(colorPicked == getResources().getColor(R.color.light_yellow))
             mColorSpinner.setSelection(3);
         else if(colorPicked == getResources().getColor(R.color.light_purple))
             mColorSpinner.setSelection(4);
         else if(colorPicked == getResources().getColor(R.color.light_orange))
             mColorSpinner.setSelection(5);
 
+        mConstraintLayout.setBackgroundColor(colorPicked);
+
         mColorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i){
                     case 0:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.light_yellow));
-                        color[0] = getResources().getColor(R.color.light_yellow);
-                        iconColor[0] = getResources().getColor(R.color.dark_yellow);
+                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_green));
+                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_green));
+                        color[0] = getResources().getColor(R.color.light_green);
+                        iconColor[0] = getResources().getColor(R.color.dark_green);
                         break;
                     case 1:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.light_Blue));
+                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_Blue));
+                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_Blue));
                         color[0] = getResources().getColor(R.color.light_Blue);
                         iconColor[0] = getResources().getColor(R.color.dark_Blue);
                         break;
                     case 2:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.light_red));
+                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_red));
+                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_red));
                         color[0] = getResources().getColor(R.color.light_red);
                         iconColor[0] = getResources().getColor(R.color.dark_red);
                         break;
                     case 3:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.light_green));
-                        color[0] = getResources().getColor(R.color.light_green);
-                        iconColor[0] = getResources().getColor(R.color.dark_green);
+                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_yellow));
+                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_yellow));
+                        color[0] = getResources().getColor(R.color.light_yellow);
+                        iconColor[0] = getResources().getColor(R.color.dark_yellow);
                         break;
                     case 4:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.light_purple));
+                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_purple));
+                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_purple));
                         color[0] = getResources().getColor(R.color.light_purple);
                         iconColor[0] = getResources().getColor(R.color.dark_purple);
                         break;
                     case 5:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.light_orange));
+                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_orange));
+                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_orange));
                         color[0] = getResources().getColor(R.color.light_orange);
                         iconColor[0] = getResources().getColor(R.color.dark_orange);
                         break;

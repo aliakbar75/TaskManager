@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TasksActivity">
+    tools:context=".TasksActivity"
+    android:background="@color/main_background">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="@dimen/big_margin"
+        android:layout_margin="@dimen/big_dp"
         android:src="@drawable/add_icon"
         android:tint="@android:color/white"
         app:maxImageSize="30dp"

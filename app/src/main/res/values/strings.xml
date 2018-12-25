@@ -12,10 +12,10 @@
     <string name="task_color_button">Color</string>
 
     <string-array name="color_array">
-        <item>Yellow</item>
+        <item>Green</item>
         <item>Blue</item>
         <item>Red</item>
-        <item>Green</item>
+        <item>Yellow</item>
         <item>Purple</item>
         <item>Orange</item>
     </string-array>

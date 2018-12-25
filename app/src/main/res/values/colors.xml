@@ -3,6 +3,10 @@
     <color name="colorPrimary">#388E3C</color>
     <color name="colorPrimaryDark">#1B5E20</color>
     <color name="colorAccent">#2E7D32</color>
+    <color name="main_background">#E8F5E9</color>
+    <color name="cancel_button">#616161</color>
+    <color name="delete_button">#D32F2F</color>
+    <color name="edit_button">#1976D2</color>
     <color name="light_Blue">#90CAF9</color>
     <color name="dark_Blue">#2196F3</color>
     <color name="light_red">#EF9A9A</color>

@@ -4,6 +4,7 @@ package com.example.moein.taskmanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,8 @@ public class TaskDetailsFragment extends Fragment {
     private Button mEditButton;
     private Button mDeleteButton;
     private Button mDoneButton;
+
+    private ConstraintLayout mConstraintLayout;
 
     public static TaskDetailsFragment newInstance(UUID taskId) {
         
@@ -69,6 +72,7 @@ public class TaskDetailsFragment extends Fragment {
         mEditButton = view.findViewById(R.id.edit_task_button);
         mDeleteButton = view.findViewById(R.id.delete_task_button);
         mDoneButton = view.findViewById(R.id.done_task_button);
+        mConstraintLayout = view.findViewById(R.id.task_detail_fragment);
 
 
 
@@ -104,6 +108,7 @@ public class TaskDetailsFragment extends Fragment {
 
         mTitleTextView.setText(mTask.getTitle());
         mDescriptionTextView.setText(mTask.getDescriptions());
+        mConstraintLayout.setBackgroundColor(mTask.getColor());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
