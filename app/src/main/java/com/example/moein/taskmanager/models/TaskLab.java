@@ -31,6 +31,19 @@ public class TaskLab {
         task.setTime(time);
         task.setColor(color);
         mTasks.put(task.getId(),task);
+        mUndoneTasks.put(task.getId(),task);
+    }
+
+    public void taskDone(Task task){
+        task.setDone(true);
+        mDoneTasks.put(task.getId(),task);
+        mUndoneTasks.remove(task.getId());
+    }
+
+    public void deleteTask(Task task){
+        mTasks.remove(task.getId());
+        mDoneTasks.remove(task.getId());
+        mUndoneTasks.remove(task.getId());
     }
 
     public List<Task> getAllTasks() {
@@ -49,5 +62,9 @@ public class TaskLab {
         if (instance == null)
             instance = new TaskLab();
         return instance;
+    }
+
+    public Task getTask(UUID id){
+        return mTasks.get(id);
     }
 }

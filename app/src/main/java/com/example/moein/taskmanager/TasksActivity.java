@@ -25,6 +25,7 @@ public class TasksActivity extends AppCompatActivity {
         mTabLayout = findViewById(R.id.tab_layout);
         mTaskViewPager = findViewById(R.id.task_view_pager);
         mFloatingActionButton = findViewById(R.id.floating_action_button);
+
         mTabLayout.setupWithViewPager(mTaskViewPager);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +67,5 @@ public class TasksActivity extends AppCompatActivity {
                 return null;
             }
         });
-
     }
 }

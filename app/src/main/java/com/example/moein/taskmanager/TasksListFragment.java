@@ -1,6 +1,7 @@
 package com.example.moein.taskmanager;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,12 +108,21 @@ public class TasksListFragment extends Fragment {
             mTitleTextView = itemView.findViewById(R.id.list_item_task_title);
             mTaskFirstLetterTextView = itemView.findViewById(R.id.task_first_letter);
             mItemListLayout = itemView.findViewById(R.id.item_list_root_layout);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = TaskDetailsActivity.newIntent(getActivity(),mTask.getId());
+                    startActivity(intent);
+                }
+            });
         }
         public void bind(Task task){
             mTask = task;
             mTitleTextView.setText(task.getTitle());
             mTaskFirstLetterTextView.setText(mTitleTextView.getText().toString().substring(0,1));
             mItemListLayout.setBackgroundColor(task.getColor());
+//            mTaskFirstLetterTextView.s
         }
     }
 

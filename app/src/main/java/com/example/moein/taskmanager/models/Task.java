@@ -27,6 +27,7 @@ public class Task {
     public Task(String title) {
         mId = UUID.randomUUID();
         mTitle = title;
+        isDone = false;
     }
 
     public String getTitle() {
