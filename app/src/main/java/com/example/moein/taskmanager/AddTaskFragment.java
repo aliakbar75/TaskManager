@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.moein.taskmanager.models.Task;
 import com.example.moein.taskmanager.models.TaskLab;
 
 
@@ -49,8 +50,14 @@ public class AddTaskFragment extends Fragment{
     private TimePickerDialog mTimePickerDialog;
     private DatePickerDialog mDatePickerDialog;
 
-    String stringDate;
-    String stringTime;
+    private String stringDate;
+    private String stringTime;
+
+    private int color;
+    private int iconColor;
+
+    private int[] lightColors = new int[6];
+    private int[] darkColors = new int[6];
 
     public static AddTaskFragment newInstance() {
         
@@ -79,8 +86,19 @@ public class AddTaskFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_task, container, false);
 
-        final Calendar calendar = Calendar.getInstance();
+        findViews(view);
 
+        mDateTextView.setText(stringDate);
+        mTimeTextView.setText(stringTime);
+
+        configureColors();
+        dateTimeDialog();
+        buttonsListeners();
+
+        return view;
+    }
+
+    private void findViews(View view) {
         mTitleEditText = view.findViewById(R.id.task_title);
         mDescriptionEditText = view.findViewById(R.id.task_description);
         mDateTextView = view.findViewById(R.id.task_date);
@@ -89,53 +107,16 @@ public class AddTaskFragment extends Fragment{
         mCancelButton = view.findViewById(R.id.task_cancel_button);
         mColorSpinner = view.findViewById(R.id.color_spinner);
         mConstraintLayout = view.findViewById(R.id.add_task_fragment);
+    }
 
-        mDateTextView.setText(stringDate);
-        mTimeTextView.setText(stringTime);
+    private void configureColors() {
+        makeLightColors();
+        makeDarkColors();
 
-        final int[] color = new int[1];
-        final int[] iconColor = new int[1];
         mColorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
-                    case 0:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_green));
-                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_green));
-                        color[0] = getResources().getColor(R.color.light_green);
-                        iconColor[0] = getResources().getColor(R.color.dark_green);
-                        break;
-                    case 1:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_Blue));
-                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_Blue));
-                        color[0] = getResources().getColor(R.color.light_Blue);
-                        iconColor[0] = getResources().getColor(R.color.dark_Blue);
-                        break;
-                    case 2:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_red));
-                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_red));
-                        color[0] = getResources().getColor(R.color.light_red);
-                        iconColor[0] = getResources().getColor(R.color.dark_red);
-                        break;
-                    case 3:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_yellow));
-                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_yellow));
-                        color[0] = getResources().getColor(R.color.light_yellow);
-                        iconColor[0] = getResources().getColor(R.color.dark_yellow);
-                        break;
-                    case 4:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_purple));
-                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_purple));
-                        color[0] = getResources().getColor(R.color.light_purple);
-                        iconColor[0] = getResources().getColor(R.color.dark_purple);
-                        break;
-                    case 5:
-                        mColorSpinner.setBackgroundColor(getResources().getColor(R.color.dark_orange));
-                        mConstraintLayout.setBackgroundColor(getResources().getColor(R.color.light_orange));
-                        color[0] = getResources().getColor(R.color.light_orange);
-                        iconColor[0] = getResources().getColor(R.color.dark_orange);
-                        break;
-                }
+                setColors(i);
             }
 
             @Override
@@ -143,6 +124,58 @@ public class AddTaskFragment extends Fragment{
 
             }
         });
+    }
+
+    private void buttonsListeners() {
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeTask();
+                getActivity().finish();
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
+    }
+
+    private void makeTask() {
+        String title = mTitleEditText.getText().toString();
+        String description = mDescriptionEditText.getText().toString();
+
+        Date date = null;
+        Date time = null;
+        try {
+            date = new SimpleDateFormat("yyyy/MM/dd").parse(stringDate);
+            time = new SimpleDateFormat("HH:mm").parse(stringTime);
+        }catch (Exception e){
+        }
+
+        if(title.length() != 0){
+            Task task = new Task(title);
+            task.setDescriptions(description);
+            task.setDate(date);
+            task.setTime(time);
+            task.setColor(color);
+            task.setIconColor(iconColor);
+            TaskLab.getInstance().addTask(task);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_DATE,stringDate);
+        outState.putString(KEY_TIME,stringTime);
+    }
+
+    private void dateTimeDialog(){
+
+        final Calendar calendar = Calendar.getInstance();
 
         mDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,44 +209,30 @@ public class AddTaskFragment extends Fragment{
                 mTimePickerDialog.show();
             }
         });
-
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String title = mTitleEditText.getText().toString();
-                String description = mDescriptionEditText.getText().toString();
-
-                Date date = null;
-                Date time = null;
-                try {
-                    date = new SimpleDateFormat("yyyy/MM/dd").parse(stringDate);
-                    time = new SimpleDateFormat("HH:mm").parse(stringTime);
-                }catch (Exception e){
-                }
-
-                if(title.length() != 0){
-                    TaskLab.getInstance().addTask(title,description,date,time,color[0],iconColor[0]);
-                }
-
-                getActivity().finish();
-            }
-        });
-
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finish();
-            }
-        });
-
-        return view;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(KEY_DATE,stringDate);
-        outState.putString(KEY_TIME,stringTime);
+    private void setColors (int i){
+        mConstraintLayout.setBackgroundColor(lightColors[i]);
+        mColorSpinner.setBackgroundColor(darkColors[i]);
+        color = lightColors[i];
+        iconColor = darkColors[i];
+    }
+
+    private void makeLightColors(){
+        lightColors[0]=getResources().getColor(R.color.light_green);
+        lightColors[1]=getResources().getColor(R.color.light_Blue);
+        lightColors[2]=getResources().getColor(R.color.light_red);
+        lightColors[3]=getResources().getColor(R.color.light_yellow);
+        lightColors[4]=getResources().getColor(R.color.light_purple);
+        lightColors[5]=getResources().getColor(R.color.light_orange);
+    }
+
+    private void makeDarkColors(){
+        darkColors[0]=getResources().getColor(R.color.dark_green);
+        darkColors[1]=getResources().getColor(R.color.dark_Blue);
+        darkColors[2]=getResources().getColor(R.color.dark_red);
+        darkColors[3]=getResources().getColor(R.color.dark_yellow);
+        darkColors[4]=getResources().getColor(R.color.dark_purple);
+        darkColors[5]=getResources().getColor(R.color.dark_orange);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.moein.taskmanager;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -65,17 +67,20 @@ public class TaskDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_task_details, container, false);
-        mTitleTextView = view.findViewById(R.id.task_title_details);
-        mDescriptionTextView = view.findViewById(R.id.task_description_details);
-        mDateTextView = view.findViewById(R.id.task_date_details);
-        mTimeTextView = view.findViewById(R.id.task_time_details);
-        mEditButton = view.findViewById(R.id.edit_task_button);
-        mDeleteButton = view.findViewById(R.id.delete_task_button);
-        mDoneButton = view.findViewById(R.id.done_task_button);
-        mConstraintLayout = view.findViewById(R.id.task_detail_fragment);
 
+        findViews(view);
+        buttonsListeners();
 
+        return view;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    private void buttonsListeners() {
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,8 +92,22 @@ public class TaskDetailsFragment extends Fragment {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TaskLab.getInstance().deleteTask(mTask);
-                getActivity().finish();
+                AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
+                deleteDialog.setMessage("Write your message here.");
+                deleteDialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        TaskLab.getInstance().deleteTask(mTask);
+                        getActivity().finish();
+                    }
+                });
+
+                deleteDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                deleteDialog.show();
             }
         });
 
@@ -99,13 +118,20 @@ public class TaskDetailsFragment extends Fragment {
                 getActivity().finish();
             }
         });
-        return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void findViews(View view) {
+        mTitleTextView = view.findViewById(R.id.task_title_details);
+        mDescriptionTextView = view.findViewById(R.id.task_description_details);
+        mDateTextView = view.findViewById(R.id.task_date_details);
+        mTimeTextView = view.findViewById(R.id.task_time_details);
+        mEditButton = view.findViewById(R.id.edit_task_button);
+        mDeleteButton = view.findViewById(R.id.delete_task_button);
+        mDoneButton = view.findViewById(R.id.done_task_button);
+        mConstraintLayout = view.findViewById(R.id.task_detail_fragment);
+    }
 
+    private void updateUI() {
         mTitleTextView.setText(mTask.getTitle());
         mDescriptionTextView.setText(mTask.getDescriptions());
         mConstraintLayout.setBackgroundColor(mTask.getColor());
@@ -119,7 +145,6 @@ public class TaskDetailsFragment extends Fragment {
             mDateTextView.setText("Date :  " + formattedDate);
             mTimeTextView.setText("Time :  " + formattedTime);
         }catch (Exception e){
-
         }
     }
 }

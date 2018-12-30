@@ -21,19 +21,19 @@
     <color name="dark_orange">#FF9800</color>
 
     <array name="task_light_colors">
-        <item>@color/light_Blue</item>
-        <item>@color/light_red</item>
         <item>@color/light_green</item>
         <item>@color/light_yellow</item>
+        <item>@color/light_Blue</item>
+        <item>@color/light_red</item>
         <item>@color/light_purple</item>
         <item>@color/light_orange</item>
     </array>
 
     <array name="task_dark_colors">
-        <item>@color/dark_Blue</item>
-        <item>@color/dark_red</item>
         <item>@color/dark_green</item>
         <item>@color/dark_yellow</item>
+        <item>@color/dark_Blue</item>
+        <item>@color/dark_red</item>
         <item>@color/dark_purple</item>
         <item>@color/dark_orange</item>
     </array>

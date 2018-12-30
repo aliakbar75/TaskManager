@@ -20,28 +20,13 @@ public class TaskLab {
         mUndoneTasks = new LinkedHashMap<>();
     }
 
-    public String addDescription(String description){
-        return description;
-    }
-
-    public void addTask(String title, String description, Date date, Date time,int color, int iconColor){
-        Task task = new Task(title);
-        task.setDescriptions(description);
-        task.setDate(date);
-        task.setTime(time);
-        task.setColor(color);
-        task.setIconColor(iconColor);
+    public void addTask(Task task){
         mTasks.put(task.getId(),task);
         mUndoneTasks.put(task.getId(),task);
     }
 
-    public void editTask(Task task,String title, String description, Date date, Date time,int color, int iconColor){
-        task.setTitle(title);
-        task.setDescriptions(description);
-        task.setDate(date);
-        task.setTime(time);
-        task.setColor(color);
-        task.setIconColor(iconColor);
+    public void editTask(Task task){
+        mTasks.put(task.getId(),task);
     }
 
     public void taskDone(Task task){
@@ -56,16 +41,16 @@ public class TaskLab {
         mUndoneTasks.remove(task.getId());
     }
 
-    public List<Task> getAllTasks() {
-        return new ArrayList<>(mTasks.values());
+    public LinkedHashMap<UUID,Task> getAllTasks() {
+        return mTasks;
     }
 
-    public List<Task> getDoneTasks() {
-        return new ArrayList<>(mDoneTasks.values());
+    public LinkedHashMap<UUID,Task> getDoneTasks() {
+        return mDoneTasks;
     }
 
-    public List<Task> getUndoneTasks() {
-        return new ArrayList<>(mUndoneTasks.values());
+    public LinkedHashMap<UUID,Task> getUndoneTasks() {
+        return mUndoneTasks;
     }
 
     public static TaskLab getInstance(){

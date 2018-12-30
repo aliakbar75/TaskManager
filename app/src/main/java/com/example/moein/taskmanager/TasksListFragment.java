@@ -23,8 +23,11 @@ import android.widget.TextView;
 import com.example.moein.taskmanager.models.Task;
 import com.example.moein.taskmanager.models.TaskLab;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 
 /**
@@ -34,7 +37,9 @@ public class TasksListFragment extends Fragment {
 
     private static final String TAB_TYPE = "tab_type";
     private RecyclerView mTasksRecyclerView;
-    private List<Task> mTasks;
+    private TasksAdapter mTasksAdapter;
+    private TextView mEmptyTextView;
+    private LinkedHashMap<UUID,Task> mTasks;
 
     public static TasksListFragment newInstance(int tabType) {
         
@@ -45,7 +50,6 @@ public class TasksListFragment extends Fragment {
         return fragment;
     }
 
-
     public TasksListFragment() {
         // Required empty public constructor
     }
@@ -54,36 +58,6 @@ public class TasksListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        int tabType = getArguments().getInt(TAB_TYPE);
-//        TaskLab taskLab = TaskLab.getInstance();
-//        switch (tabType){
-//            case 0:
-//                mTasks = taskLab.getAllTasks();
-//                break;
-//            case 1:
-//                mTasks = taskLab.getDoneTasks();
-//                break;
-//            case 2:
-//                mTasks = taskLab.getUndoneTasks();
-//                break;
-//        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_tasks_list, container, false);
-        mTasksRecyclerView = view.findViewById(R.id.tasks_recycler_view);
-        mTasksRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        TasksAdapter tasksAdapter = new TasksAdapter(mTasks);
-//        mTasksRecyclerView.setAdapter(tasksAdapter);
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         int tabType = getArguments().getInt(TAB_TYPE);
         TaskLab taskLab = TaskLab.getInstance();
         switch (tabType){
@@ -97,8 +71,43 @@ public class TasksListFragment extends Fragment {
                 mTasks = taskLab.getUndoneTasks();
                 break;
         }
-        TasksAdapter tasksAdapter = new TasksAdapter(mTasks);
-        mTasksRecyclerView.setAdapter(tasksAdapter);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =inflater.inflate(R.layout.fragment_tasks_list, container, false);
+        findViews(view);
+        setAdapter();
+        return view;
+    }
+
+    private void findViews(View view) {
+        mTasksRecyclerView = view.findViewById(R.id.tasks_recycler_view);
+        mEmptyTextView = view.findViewById(R.id.empty_text);
+        mTasksRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setAdapter();
+        if (mTasks.size()==0){
+            mEmptyTextView.setVisibility(View.VISIBLE);
+        }else {
+            mEmptyTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setAdapter() {
+        if (mTasksAdapter == null){
+            mTasksAdapter = new TasksAdapter(mTasks);
+            mTasksRecyclerView.setAdapter(mTasksAdapter);
+        }else {
+            mTasksAdapter.setTasks(mTasks);
+            mTasksAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -108,11 +117,11 @@ public class TasksListFragment extends Fragment {
         private TextView mTitleTextView;
         private TextView mTaskFirstLetterTextView;
         private ConstraintLayout mItemListLayout;
+
         public TasksHolder(@NonNull View itemView) {
             super(itemView);
-            mTitleTextView = itemView.findViewById(R.id.list_item_task_title);
-            mTaskFirstLetterTextView = itemView.findViewById(R.id.task_first_letter);
-            mItemListLayout = itemView.findViewById(R.id.item_list_root_layout);
+
+            findViews(itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,6 +131,13 @@ public class TasksListFragment extends Fragment {
                 }
             });
         }
+
+        private void findViews(@NonNull View itemView) {
+            mTitleTextView = itemView.findViewById(R.id.list_item_task_title);
+            mTaskFirstLetterTextView = itemView.findViewById(R.id.task_first_letter);
+            mItemListLayout = itemView.findViewById(R.id.item_list_root_layout);
+        }
+
         public void bind(Task task){
             mTask = task;
             mTitleTextView.setText(task.getTitle());
@@ -136,10 +152,13 @@ public class TasksListFragment extends Fragment {
 
         private List<Task> mTasks;
 
-        public TasksAdapter(List<Task> tasks) {
-            mTasks = tasks;
+        public TasksAdapter(LinkedHashMap<UUID,Task> tasks) {
+            mTasks = new ArrayList<>(tasks.values());
         }
 
+        public void setTasks(LinkedHashMap<UUID,Task> tasks){
+            mTasks = new ArrayList<>(tasks.values());
+        }
         @NonNull
         @Override
         public TasksHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -160,5 +179,4 @@ public class TasksListFragment extends Fragment {
             return mTasks.size();
         }
     }
-
 }

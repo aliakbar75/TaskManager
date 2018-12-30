@@ -17,17 +17,25 @@ public class TasksActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewPager mTaskViewPager;
     private FloatingActionButton mFloatingActionButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
 
+        findViews();
+        mTabLayout.setupWithViewPager(mTaskViewPager);
+        floatingActionButtonListener();
+        setViewPagerAdapter();
+    }
+
+    private void findViews() {
         mTabLayout = findViewById(R.id.tab_layout);
         mTaskViewPager = findViewById(R.id.task_view_pager);
         mFloatingActionButton = findViewById(R.id.floating_action_button);
+    }
 
-        mTabLayout.setupWithViewPager(mTaskViewPager);
-
+    private void floatingActionButtonListener() {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,7 +43,9 @@ public class TasksActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    private void setViewPagerAdapter() {
         mTaskViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {

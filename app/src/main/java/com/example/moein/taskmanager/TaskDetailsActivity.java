@@ -29,7 +29,5 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     .add(R.id.task_details_fragment_container,TaskDetailsFragment.newInstance(taskId))
                     .commit();
         }
-
-
     }
 }

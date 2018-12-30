@@ -13,6 +13,12 @@ public class Task {
     private int mColor;
     private int mIconColor;
 
+    public Task(String title) {
+        mId = UUID.randomUUID();
+        mTitle = title;
+        isDone = false;
+    }
+
     public int getIconColor() {
         return mIconColor;
     }
@@ -31,12 +37,6 @@ public class Task {
 
     public UUID getId() {
         return mId;
-    }
-
-    public Task(String title) {
-        mId = UUID.randomUUID();
-        mTitle = title;
-        isDone = false;
     }
 
     public String getTitle() {

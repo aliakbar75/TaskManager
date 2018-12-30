@@ -26,6 +26,5 @@ public class AddTaskActivity extends AppCompatActivity {
                     .add(R.id.add_task_fragment_container,AddTaskFragment.newInstance())
                     .commit();
         }
-
     }
 }

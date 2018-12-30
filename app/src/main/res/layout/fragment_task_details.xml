@@ -68,7 +68,9 @@
         android:layout_marginBottom="@dimen/medium_dp"
         android:layout_marginRight="@dimen/small_dp"
         android:background="@color/edit_button"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:drawableTint="@android:color/white"
+        android:padding="@dimen/medium_dp"/>
 
     <Button
         android:id="@+id/delete_task_button"
@@ -84,7 +86,9 @@
         android:layout_marginLeft="@dimen/small_dp"
         android:layout_marginBottom="@dimen/medium_dp"
         android:background="@color/delete_button"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:drawableTint="@android:color/white"
+        android:padding="@dimen/medium_dp"/>
 
     <Button
         android:id="@+id/done_task_button"
@@ -100,6 +104,8 @@
         android:layout_marginRight="@dimen/big_dp"
         android:layout_marginLeft="@dimen/small_dp"
         android:background="@color/colorPrimary"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:drawableTint="@android:color/white"
+        android:padding="@dimen/medium_dp"/>
 
 </android.support.constraint.ConstraintLayout>
