@@ -93,8 +93,8 @@ public class TaskDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
-                deleteDialog.setMessage("Write your message here.");
-                deleteDialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                deleteDialog.setMessage(R.string.delete_text_alert);
+                deleteDialog.setPositiveButton(R.string.delete_button_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         TaskLab.getInstance().deleteTask(mTask);
@@ -102,7 +102,7 @@ public class TaskDetailsFragment extends Fragment {
                     }
                 });
 
-                deleteDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                deleteDialog.setNegativeButton(R.string.cancel_delete_button_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
