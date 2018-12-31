@@ -39,6 +39,7 @@ public class TasksListFragment extends Fragment {
     private RecyclerView mTasksRecyclerView;
     private TasksAdapter mTasksAdapter;
     private TextView mEmptyTextView;
+    private ImageView mEmptyImageView;
     private LinkedHashMap<UUID,Task> mTasks;
 
     public static TasksListFragment newInstance(int tabType) {
@@ -86,6 +87,7 @@ public class TasksListFragment extends Fragment {
     private void findViews(View view) {
         mTasksRecyclerView = view.findViewById(R.id.tasks_recycler_view);
         mEmptyTextView = view.findViewById(R.id.empty_text);
+        mEmptyImageView = view.findViewById(R.id.empty_image);
         mTasksRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
@@ -95,8 +97,10 @@ public class TasksListFragment extends Fragment {
         setAdapter();
         if (mTasks.size()==0){
             mEmptyTextView.setVisibility(View.VISIBLE);
+            mEmptyImageView.setVisibility(View.VISIBLE);
         }else {
             mEmptyTextView.setVisibility(View.GONE);
+            mEmptyImageView.setVisibility(View.GONE);
         }
     }
 

@@ -5,4 +5,5 @@
     <dimen name="medium_dp">8dp</dimen>
     <dimen name="small_dp">2dp</dimen>
     <dimen name="big_top_margin">20dp</dimen>
+    <dimen name="very_big_margin">60dp</dimen>
 </resources>

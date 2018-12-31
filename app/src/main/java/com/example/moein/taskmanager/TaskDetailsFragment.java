@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,8 @@ public class TaskDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_task_details, container, false);
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.task_details_toolbar_title);
+
         findViews(view);
         buttonsListeners();
 
@@ -92,22 +95,7 @@ public class TaskDetailsFragment extends Fragment {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
-                deleteDialog.setMessage(R.string.delete_text_alert);
-                deleteDialog.setPositiveButton(R.string.delete_button_text, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        TaskLab.getInstance().deleteTask(mTask);
-                        getActivity().finish();
-                    }
-                });
-
-                deleteDialog.setNegativeButton(R.string.cancel_delete_button_text, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                deleteDialog.show();
+                deleteDialog();
             }
         });
 
@@ -118,6 +106,27 @@ public class TaskDetailsFragment extends Fragment {
                 getActivity().finish();
             }
         });
+    }
+
+    private void deleteDialog() {
+        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
+        deleteDialog.setMessage(R.string.delete_text_alert);
+        deleteDialog.setPositiveButton(R.string.delete_button_text, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                TaskLab.getInstance().deleteTask(mTask);
+                getActivity().finish();
+            }
+        });
+
+        deleteDialog.setNegativeButton(R.string.cancel_delete_button_text, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        AlertDialog dialog = deleteDialog.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.light_red);
     }
 
     private void findViews(View view) {

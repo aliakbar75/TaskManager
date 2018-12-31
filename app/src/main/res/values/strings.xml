@@ -14,6 +14,9 @@
     <string name="delete_text_alert">Are you sure ?</string>
     <string name="delete_button_text">Delete</string>
     <string name="cancel_delete_button_text">Cancel</string>
+    <string name="add_task_toolbar_title">AddTask</string>
+    <string name="edit_task_toolbar_title">EditTask</string>
+    <string name="task_details_toolbar_title">TaskDetails</string>
 
     <string-array name="color_array">
         <item>Green</item>

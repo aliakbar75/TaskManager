@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AndroidException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,6 +95,8 @@ public class EditTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_task, container, false);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.edit_task_toolbar_title);
 
         findViews(view);
         updateUI(savedInstanceState);
