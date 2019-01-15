@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.moein.taskmanager.database.TaskBaseHelper;
 import com.example.moein.taskmanager.database.TaskCursorWrapper;
@@ -18,12 +19,10 @@ public class TaskLab {
 
     private static TaskLab instance;
     private SQLiteDatabase mDatabase;
-    private Context mContext;
 
     private TaskLab(Context context) {
-
-        mContext = context.getApplicationContext();
-        mDatabase = new TaskBaseHelper(mContext).getWritableDatabase();
+        Context context1 = context.getApplicationContext();
+        mDatabase = new TaskBaseHelper(context1).getWritableDatabase();
     }
 
     public static TaskLab getInstance(Context context){
@@ -122,7 +121,8 @@ public class TaskLab {
             values.put(TaskDbSchema.TaskTable.Cols.DATE, task.getDate().getTime());
             values.put(TaskDbSchema.TaskTable.Cols.TIME, task.getTime().getTime());
         }catch (Exception e){
-
+            Log.e("TaskLab","",e);
+            e.printStackTrace();
         }
 
         values.put(TaskDbSchema.TaskTable.Cols.DONE, task.isDone() ? 1 : 0);
