@@ -9,14 +9,28 @@ public class Task {
     private String mDescriptions;
     private Date mDate;
     private Date mTime;
-    private boolean isDone;
+    private boolean mDone;
     private int mColor;
     private int mIconColor;
+    private UUID mUserId;
 
     public Task(String title) {
-        mId = UUID.randomUUID();
+        this(title,UUID.randomUUID());
+    }
+
+    public Task(String title,UUID id) {
+        mId = id;
         mTitle = title;
-        isDone = false;
+        mDone = false;
+        mDate = new Date();
+    }
+
+    public UUID getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(UUID userId) {
+        mUserId = userId;
     }
 
     public int getIconColor() {
@@ -72,10 +86,10 @@ public class Task {
     }
 
     public boolean isDone() {
-        return isDone;
+        return mDone;
     }
 
     public void setDone(boolean done) {
-        isDone = done;
+        mDone = done;
     }
 }

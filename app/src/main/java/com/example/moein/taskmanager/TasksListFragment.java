@@ -1,12 +1,9 @@
 package com.example.moein.taskmanager;
 
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +11,11 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,7 +27,6 @@ import com.example.moein.taskmanager.models.TaskLab;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 
@@ -35,17 +35,25 @@ import java.util.UUID;
  */
 public class TasksListFragment extends Fragment {
 
+    private static final int ALL_TASKS = 0;
+    private static final int DONE_TASKS = 1;
+    private static final int UNDONE_tASKS = 2;
+
     private static final String TAB_TYPE = "tab_type";
+    private static final String ARG_USER_ID = "user_id";
+    private static final int REQ_DELETE = 2;
+    private static final String DIALOG_DELETE_ALERT = "delete_alert";
     private RecyclerView mTasksRecyclerView;
     private TasksAdapter mTasksAdapter;
     private TextView mEmptyTextView;
     private ImageView mEmptyImageView;
-    private LinkedHashMap<UUID,Task> mTasks;
+    private List<Task> mTasks;
 
-    public static TasksListFragment newInstance(int tabType) {
+    public static TasksListFragment newInstance(int tabType,UUID userId) {
         
         Bundle args = new Bundle();
         args.putInt(TAB_TYPE,tabType);
+        args.putSerializable(ARG_USER_ID,userId);
         TasksListFragment fragment = new TasksListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,20 +67,25 @@ public class TasksListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        UUID userId = (UUID) getArguments().getSerializable(ARG_USER_ID);
+
+        setHasOptionsMenu(true);
+
         int tabType = getArguments().getInt(TAB_TYPE);
-        TaskLab taskLab = TaskLab.getInstance();
+        TaskLab taskLab = TaskLab.getInstance(getActivity());
         switch (tabType){
-            case 0:
-                mTasks = taskLab.getAllTasks();
+            case ALL_TASKS:
+                mTasks = taskLab.getTasks(userId,ALL_TASKS);
                 break;
-            case 1:
-                mTasks = taskLab.getDoneTasks();
+            case DONE_TASKS:
+                mTasks = taskLab.getTasks(userId,DONE_TASKS);
                 break;
-            case 2:
-                mTasks = taskLab.getUndoneTasks();
+            case UNDONE_tASKS:
+                mTasks = taskLab.getTasks(userId,UNDONE_tASKS);
                 break;
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,8 +105,24 @@ public class TasksListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_tasks_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        DeleteAlertFragment deleteAlertFragment = DeleteAlertFragment.newInstance();
+        deleteAlertFragment.setTargetFragment(TasksListFragment.this,REQ_DELETE);
+        deleteAlertFragment.show(getFragmentManager(),DIALOG_DELETE_ALERT);
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+
+        Log.d("hhhhhhh", "onResume");
         setAdapter();
         if (mTasks.size()==0){
             mEmptyTextView.setVisibility(View.VISIBLE);
@@ -101,6 +130,24 @@ public class TasksListFragment extends Fragment {
         }else {
             mEmptyTextView.setVisibility(View.GONE);
             mEmptyImageView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != Activity.RESULT_OK)
+            return;
+
+        if (requestCode == REQ_DELETE) {
+            boolean isDeleted = data.getBooleanExtra(DeleteAlertFragment.EXTRA_DELETED,false);
+            if (isDeleted){
+                for (Task task : mTasks){
+                    TaskLab.getInstance(getActivity()).deleteTask(task);
+                }
+                ((TasksActivity) getActivity()).onResume();
+            }
         }
     }
 
@@ -117,6 +164,8 @@ public class TasksListFragment extends Fragment {
 
     private class TasksHolder extends RecyclerView.ViewHolder{
 
+        private static final String DIALOG_TASK_DETAILS = "dialog_task_details";
+
         private Task mTask;
         private TextView mTitleTextView;
         private TextView mTaskFirstLetterTextView;
@@ -130,8 +179,10 @@ public class TasksListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = TaskDetailsActivity.newIntent(getActivity(),mTask.getId());
-                    startActivity(intent);
+                    TaskDetailsFragment taskDetailsFragment = TaskDetailsFragment.newInstance(mTask.getId());
+                    taskDetailsFragment.show(getFragmentManager(),DIALOG_TASK_DETAILS);
+//                    Intent intent = TaskDetailsActivity.newIntent(getActivity(),mTask.getId());
+//                    startActivity(intent);
                 }
             });
         }
@@ -156,12 +207,12 @@ public class TasksListFragment extends Fragment {
 
         private List<Task> mTasks;
 
-        public TasksAdapter(LinkedHashMap<UUID,Task> tasks) {
-            mTasks = new ArrayList<>(tasks.values());
+        public TasksAdapter(List<Task> tasks) {
+            mTasks = tasks;
         }
 
-        public void setTasks(LinkedHashMap<UUID,Task> tasks){
-            mTasks = new ArrayList<>(tasks.values());
+        public void setTasks(List<Task> tasks){
+            mTasks = tasks;
         }
         @NonNull
         @Override

@@ -17,6 +17,17 @@
     <string name="add_task_toolbar_title">AddTask</string>
     <string name="edit_task_toolbar_title">EditTask</string>
     <string name="task_details_toolbar_title">TaskDetails</string>
+    <string name="create_account_toolbar_title">CreateAccount</string>
+    <string name="login_toolbar_title">Login</string>
+    <string name="delete_all_tasks">delete all tasks</string>
+    <string name="login_alert">You don\'t have account. Do you want to create one to save your tasks ?</string>
+    <string name="all_tasks">All</string>
+    <string name="done_tasks">Done</string>
+    <string name="undone_tasks">Undone</string>
+    <string name="ivalid_data_login">InputValidData</string>
+    <string name="invalid_username">Invalid UserName</string>
+    <string name="invalid_password">Invalid Password</string>
+    <string name="user_name_exist">this username already exist</string>
 
     <string-array name="color_array">
         <item>Green</item>
