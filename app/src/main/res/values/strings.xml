@@ -28,6 +28,11 @@
     <string name="invalid_username">Invalid UserName</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="user_name_exist">this username already exist</string>
+    <string name="share_title">Send data via</string>
+    <string name="share_title_subject">Task data</string>
+    <string name="task_done">task is done</string>
+    <string name="task_undone">task is undone</string>
+    <string name="share_text"> Title:%1$s  Description:%2$s.  Date: %3$s and Time: %4$s.  %5$s</string>
 
     <string-array name="color_array">
         <item>Green</item>

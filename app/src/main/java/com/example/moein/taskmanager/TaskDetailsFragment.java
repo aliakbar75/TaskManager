@@ -46,6 +46,7 @@ public class TaskDetailsFragment extends DialogFragment {
     private Button mEditButton;
     private Button mDeleteButton;
     private Button mDoneButton;
+    private Button mShareButton;
 
     private ConstraintLayout mConstraintLayout;
 
@@ -131,6 +132,33 @@ public class TaskDetailsFragment extends DialogFragment {
                 ((TasksActivity) getActivity()).onResume();
             }
         });
+
+        mShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                String dateString = "  ";
+                String timeString = "  ";
+                try {
+                    dateString = new SimpleDateFormat("yyyy/MM/dd").format(mTask.getMDate());
+                    timeString = new SimpleDateFormat("HH:mm").format(mTask.getMTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String doneString = mTask.getMDone() ? getString(R.string.task_done) : getString(R.string.task_undone);
+
+                String shareText = getString(R.string.share_text, mTask.getMTitle(), mTask.getMDescriptions(), dateString, timeString,doneString);
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_title_subject));
+
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_title)));
+            }
+        });
     }
 
 
@@ -143,6 +171,7 @@ public class TaskDetailsFragment extends DialogFragment {
         mDeleteButton = view.findViewById(R.id.delete_task_button);
         mDoneButton = view.findViewById(R.id.done_task_button);
         mConstraintLayout = view.findViewById(R.id.task_detail_fragment);
+        mShareButton = view.findViewById(R.id.share_task_button);
     }
 
     private void updateUI() {
