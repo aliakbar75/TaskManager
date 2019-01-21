@@ -76,9 +76,6 @@ public class DateTimePickerFragment extends DialogFragment {
             }
         });
 
-
-
-
         return view;
     }
 

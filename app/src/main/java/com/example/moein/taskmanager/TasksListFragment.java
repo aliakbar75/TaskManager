@@ -49,7 +49,7 @@ public class TasksListFragment extends Fragment {
     private ImageView mEmptyImageView;
     private List<Task> mTasks;
 
-    public static TasksListFragment newInstance(int tabType,UUID userId) {
+    public static TasksListFragment newInstance(int tabType,Long userId) {
         
         Bundle args = new Bundle();
         args.putInt(TAB_TYPE,tabType);
@@ -67,7 +67,7 @@ public class TasksListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UUID userId = (UUID) getArguments().getSerializable(ARG_USER_ID);
+        Long userId = (Long) getArguments().getSerializable(ARG_USER_ID);
 
         setHasOptionsMenu(true);
 
@@ -85,7 +85,6 @@ public class TasksListFragment extends Fragment {
                 break;
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -179,7 +178,7 @@ public class TasksListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    TaskDetailsFragment taskDetailsFragment = TaskDetailsFragment.newInstance(mTask.getId());
+                    TaskDetailsFragment taskDetailsFragment = TaskDetailsFragment.newInstance(mTask.getMId());
                     taskDetailsFragment.show(getFragmentManager(),DIALOG_TASK_DETAILS);
 //                    Intent intent = TaskDetailsActivity.newIntent(getActivity(),mTask.getId());
 //                    startActivity(intent);
@@ -195,11 +194,11 @@ public class TasksListFragment extends Fragment {
 
         public void bind(Task task){
             mTask = task;
-            mTitleTextView.setText(task.getTitle());
+            mTitleTextView.setText(task.getMTitle());
             mTaskFirstLetterTextView.setText(mTitleTextView.getText().toString().substring(0,1));
-            mItemListLayout.setBackgroundColor(task.getColor());
+            mItemListLayout.setBackgroundColor(task.getMColor());
             GradientDrawable background = (GradientDrawable) mTaskFirstLetterTextView.getBackground();
-            background.setColor(task.getIconColor());
+            background.setColor(task.getMIconColor());
         }
     }
 

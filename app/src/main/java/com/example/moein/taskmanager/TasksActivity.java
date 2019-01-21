@@ -27,13 +27,17 @@ public class TasksActivity extends AppCompatActivity {
     private static final String EXTRA_USER_ID = "com.example.moein.taskmanager.user_id";
     private static final String DIALOG_ADD_TASK = "add_task";
     private static final String DIALOG_LOGIN_ALERT = "login_alert";
+    private static final int ALL_TASKS = 0;
+    private static final int DONE_TASKS = 1;
+    private static final int UNDONE_tASKS = 2;
+
     private TabLayout mTabLayout;
     private ViewPager mTaskViewPager;
     private FloatingActionButton mFloatingActionButton;
 
-    private UUID mUserId;
+    private Long mUserId;
 
-    public static Intent newIntent(Context context,UUID userId){
+    public static Intent newIntent(Context context,Long userId){
         Intent intent = new Intent(context,TasksActivity.class);
         intent.putExtra(EXTRA_USER_ID,userId);
         return intent;
@@ -44,7 +48,7 @@ public class TasksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
 
-        mUserId = (UUID) getIntent().getSerializableExtra(EXTRA_USER_ID);
+        mUserId = (Long) getIntent().getSerializableExtra(EXTRA_USER_ID);
 
         findViews();
         mTabLayout.setupWithViewPager(mTaskViewPager);
@@ -60,8 +64,8 @@ public class TasksActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        User user = UserLab.getInstance(this).getUser(mUserId);
-        if (user == null){
+        String userName = UserLab.getInstance(this).getUser(mUserId).getMUserName();
+        if (userName == null){
             LoginAlertFragment loginAlertFragment = LoginAlertFragment.newInstance(mUserId);
             loginAlertFragment.show(getSupportFragmentManager(),DIALOG_LOGIN_ALERT);
         }else {
@@ -89,16 +93,16 @@ public class TasksActivity extends AppCompatActivity {
         });
     }
 
-    private void setViewPagerAdapter(final UUID userId) {
+    private void setViewPagerAdapter(final Long userId) {
         mTaskViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {
-                if(i==0)
-                    return TasksListFragment.newInstance(0,userId);
-                if(i==1)
-                    return TasksListFragment.newInstance(1,userId);
-                if(i==2)
-                    return TasksListFragment.newInstance(2,userId);
+                if(i==ALL_TASKS)
+                    return TasksListFragment.newInstance(ALL_TASKS,userId);
+                if(i==DONE_TASKS)
+                    return TasksListFragment.newInstance(DONE_TASKS,userId);
+                if(i==UNDONE_tASKS)
+                    return TasksListFragment.newInstance(UNDONE_tASKS,userId);
 
                 return null;
             }

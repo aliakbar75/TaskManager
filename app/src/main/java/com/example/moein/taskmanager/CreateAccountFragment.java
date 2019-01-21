@@ -29,9 +29,9 @@ public class CreateAccountFragment extends Fragment {
     private Button mCreateButton;
     private Button mCancelButton;
 
-    private UUID mUserId;
+    private Long mUserId;
 
-    public static CreateAccountFragment newInstance(UUID userId) {
+    public static CreateAccountFragment newInstance(Long userId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER_ID,userId);
         CreateAccountFragment fragment = new CreateAccountFragment();
@@ -48,7 +48,7 @@ public class CreateAccountFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mUserId = (UUID) getArguments().getSerializable(ARG_USER_ID);
+        mUserId = (Long) getArguments().getSerializable(ARG_USER_ID);
     }
 
     @Override
@@ -74,13 +74,11 @@ public class CreateAccountFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.invalid_username, Toast.LENGTH_SHORT).show();
                 }else if (password.length() > 12 || password.length() < 4) {
                     Toast.makeText(getActivity(), R.string.invalid_password, Toast.LENGTH_SHORT).show();
-                }else if (userName.equals(user0.getUserName())){
+                }else if (user0 != null && userName.equals(user0.getMUserName())){
                     Toast.makeText(getActivity(), R.string.user_name_exist, Toast.LENGTH_SHORT).show();
                 }else {
-                    User user =new User(mUserId);
-                    user.setUserName(userName);
-                    user.setPassword(password);
-                    UserLab.getInstance(getActivity()).addUser(user);
+                    User user =new User(mUserId,userName,password);
+                    UserLab.getInstance(getActivity()).updateUser(user);
                     getActivity().finish();
                 }
 

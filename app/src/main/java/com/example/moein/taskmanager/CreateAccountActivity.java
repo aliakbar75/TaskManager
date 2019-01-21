@@ -11,9 +11,9 @@ import java.util.UUID;
 public class CreateAccountActivity extends AppCompatActivity {
 
     private static final String EXTRA_USER_ID = "com.example.moein.taskmanager.user_id";
-    private UUID mUserId;
+    private Long mUserId;
 
-    public static Intent newIntent(Context context,UUID userId){
+    public static Intent newIntent(Context context,Long userId){
         Intent intent = new Intent(context,CreateAccountActivity.class);
         intent.putExtra(EXTRA_USER_ID,userId);
         return intent;
@@ -26,7 +26,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        UUID userId = (UUID) getIntent().getSerializableExtra(EXTRA_USER_ID);
+        Long userId = (Long) getIntent().getSerializableExtra(EXTRA_USER_ID);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         if(fragmentManager.findFragmentById(R.id.create_account_fragment_container)== null){

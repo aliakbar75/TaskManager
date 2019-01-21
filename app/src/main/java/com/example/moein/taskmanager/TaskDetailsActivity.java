@@ -12,7 +12,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
 
     private static final String EXTRA_TASK_ID = "com.example.moein.taskmanager.task_id";
 
-    public static Intent newIntent(Context context, UUID taskId){
+    public static Intent newIntent(Context context, Long taskId){
         Intent intent = new Intent(context,TaskDetailsActivity.class);
         intent.putExtra(EXTRA_TASK_ID,taskId);
         return intent;
@@ -23,7 +23,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_details);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        UUID taskId = (UUID) getIntent().getSerializableExtra(EXTRA_TASK_ID);
+        Long taskId = (Long) getIntent().getSerializableExtra(EXTRA_TASK_ID);
         if (fragmentManager.findFragmentById(R.id.task_details_fragment_container) == null){
             fragmentManager.beginTransaction()
                     .add(R.id.task_details_fragment_container,TaskDetailsFragment.newInstance(taskId))

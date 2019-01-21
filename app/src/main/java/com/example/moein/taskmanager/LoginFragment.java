@@ -61,7 +61,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 User user = new User();
-                Intent intent = CreateAccountActivity.newIntent(getActivity(),user.getId());
+                Intent intent = CreateAccountActivity.newIntent(getActivity(),user.getMId());
                 startActivity(intent);
             }
         });
@@ -75,8 +75,8 @@ public class LoginFragment extends Fragment {
 
                 User user = UserLab.getInstance(getActivity()).getUser(userName);
                 if (user != null){
-                    if (password.equals(user.getPassword())){
-                        Intent intent = TasksActivity.newIntent(getActivity(),user.getId());
+                    if (password.equals(user.getMPassword())){
+                        Intent intent = TasksActivity.newIntent(getActivity(),user.getMId());
                         startActivity(intent);
                         getActivity().finish();
                     }
@@ -91,7 +91,8 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 User user = new User();
-                Intent intent = TasksActivity.newIntent(getActivity(),user.getId());
+                UserLab.getInstance(getActivity()).addUser(user);
+                Intent intent = TasksActivity.newIntent(getActivity(),user.getMId());
                 startActivity(intent);
                 getActivity().finish();
             }

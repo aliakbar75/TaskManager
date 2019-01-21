@@ -7,12 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AndroidException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -33,7 +34,7 @@ import java.util.UUID;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditTaskFragment extends Fragment {
+public class EditTaskFragment extends DialogFragment {
 
     private static final String KEY_DATE = "date";
     private static final String KEY_TIME = "time";
@@ -55,16 +56,16 @@ public class EditTaskFragment extends Fragment {
     private TimePickerDialog mTimePickerDialog;
     private DatePickerDialog mDatePickerDialog;
 
-    String stringDate;
-    String stringTime;
+    private String stringDate;
+    private String stringTime;
 
-    int color;
-    int iconColor;
+    private int color;
+    private int iconColor;
 
     private int[] lightColors = new int[6];
     private int[] darkColors = new int[6];
 
-    public static EditTaskFragment newInstance(UUID taskId) {
+    public static EditTaskFragment newInstance(Long taskId) {
 
         Bundle args = new Bundle();
         args.putSerializable(ARG_TASK_ID,taskId);
@@ -78,6 +79,13 @@ public class EditTaskFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow()
+                .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -86,8 +94,8 @@ public class EditTaskFragment extends Fragment {
             stringTime = savedInstanceState.getString(KEY_TIME);
         }
 
-        UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
-        mTask = TaskLab.getInstance().getTask(taskId);
+        Long taskId = (Long) getArguments().getSerializable(ARG_TASK_ID);
+        mTask = TaskLab.getInstance(getActivity()).getTask(taskId);
     }
 
     @Override
@@ -108,15 +116,15 @@ public class EditTaskFragment extends Fragment {
     }
 
     private void updateUI(Bundle savedInstanceState) {
-        mTitleEditText.setText(mTask.getTitle());
-        mDescriptionEditText.setText(mTask.getDescriptions());
+        mTitleEditText.setText(mTask.getMTitle());
+        mDescriptionEditText.setText(mTask.getMDescriptions());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
         try {
-            String formattedDate = simpleDateFormat.format(mTask.getDate());
-            String formattedTime = simpleTimeFormat.format(mTask.getTime());
+            String formattedDate = simpleDateFormat.format(mTask.getMDate());
+            String formattedTime = simpleTimeFormat.format(mTask.getMTime());
             if(savedInstanceState == null){
                 mDateTextView.setText("Date :  " + formattedDate);
                 mTimeTextView.setText("Time :  " + formattedTime);
@@ -143,7 +151,7 @@ public class EditTaskFragment extends Fragment {
     private void configureColors() {
         makeLightColors();
         makeDarkColors();
-        int colorPicked = mTask.getColor();
+        int colorPicked = mTask.getMColor();
 
         for (int i=0; i<6; i++){
             if (colorPicked == lightColors[i]){
@@ -182,23 +190,24 @@ public class EditTaskFragment extends Fragment {
                 }
 
                 if(title.length() != 0){
-                    mTask.setTitle(title);
-                    mTask.setDescriptions(description);
-                    mTask.setDate(date);
-                    mTask.setTime(time);
-                    mTask.setColor(color);
-                    mTask.setIconColor(iconColor);
-                    TaskLab.getInstance().editTask(mTask);
+                    mTask.setMTitle(title);
+                    mTask.setMDescriptions(description);
+                    mTask.setMDate(date);
+                    mTask.setMTime(time);
+                    mTask.setMColor(color);
+                    mTask.setMIconColor(iconColor);
+                    TaskLab.getInstance(getActivity()).updateTask(mTask);
                 }
 
-                getActivity().finish();
+                dismiss();
+                ((TasksActivity) getActivity()).onResume();
             }
         });
 
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                dismiss();
             }
         });
     }

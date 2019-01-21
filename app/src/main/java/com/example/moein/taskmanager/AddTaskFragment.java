@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -27,15 +29,20 @@ import com.example.moein.taskmanager.models.TaskLab;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.UUID;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddTaskFragment extends Fragment{
+public class AddTaskFragment extends DialogFragment {
+
 
     private static final String KEY_DATE = "date";
     private static final String KEY_TIME = "time";
+    private static final String ARG_USER_ID = "userId";
+    private static final String DATE_PICKER = "date_picker";
 
     private ConstraintLayout mConstraintLayout;
     private EditText mTitleEditText;
@@ -51,6 +58,10 @@ public class AddTaskFragment extends Fragment{
     private TimePickerDialog mTimePickerDialog;
     private DatePickerDialog mDatePickerDialog;
 
+    private Long mUserId;
+
+    private Date mDate;
+
     private String stringDate;
     private String stringTime;
 
@@ -60,9 +71,10 @@ public class AddTaskFragment extends Fragment{
     private int[] lightColors = new int[6];
     private int[] darkColors = new int[6];
 
-    public static AddTaskFragment newInstance() {
+    public static AddTaskFragment newInstance(Long userId) {
         
         Bundle args = new Bundle();
+        args.putSerializable(ARG_USER_ID, userId);
         AddTaskFragment fragment = new AddTaskFragment();
         fragment.setArguments(args);
         return fragment;
@@ -73,8 +85,17 @@ public class AddTaskFragment extends Fragment{
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow()
+                .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mUserId = (Long) getArguments().getSerializable(ARG_USER_ID);
         if (savedInstanceState != null){
             stringDate = savedInstanceState.getString(KEY_DATE);
             stringTime = savedInstanceState.getString(KEY_TIME);
@@ -134,14 +155,15 @@ public class AddTaskFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 makeTask();
-                getActivity().finish();
+                dismiss();
+                ((TasksActivity) getActivity()).onResume();
             }
         });
 
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                dismiss();
             }
         });
     }
@@ -159,13 +181,15 @@ public class AddTaskFragment extends Fragment{
         }
 
         if(title.length() != 0){
-            Task task = new Task(title);
-            task.setDescriptions(description);
-            task.setDate(date);
-            task.setTime(time);
-            task.setColor(color);
-            task.setIconColor(iconColor);
-            TaskLab.getInstance().addTask(task);
+            Task task = new Task();
+            task.setMTitle(title);
+            task.setMUserId(mUserId);
+            task.setMDescriptions(description);
+            task.setMDate(mDate);
+            task.setMTime(time);
+            task.setMColor(color);
+            task.setMIconColor(iconColor);
+            TaskLab.getInstance(getActivity()).addTask(task);
         }
     }
 
@@ -180,6 +204,15 @@ public class AddTaskFragment extends Fragment{
 
         final Calendar calendar = Calendar.getInstance();
 
+//        mDateTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DateTimePickerFragment dateTimePickerFragment = DateTimePickerFragment.newInstance();
+//                dateTimePickerFragment.show(getFragmentManager(),DATE_PICKER);
+//            }
+//        });
+
+
         mDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -189,6 +222,8 @@ public class AddTaskFragment extends Fragment{
                 mDatePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
+                        mDate = new GregorianCalendar(i,i1,i2).getTime();
                         mDateTextView.setText(i+"/"+(i1+1)+"/"+i2);
                         stringDate = mDateTextView.getText().toString();
                     }

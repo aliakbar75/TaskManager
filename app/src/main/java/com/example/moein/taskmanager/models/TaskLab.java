@@ -11,6 +11,8 @@ import com.example.moein.taskmanager.database.TaskBaseHelper;
 import com.example.moein.taskmanager.database.TaskCursorWrapper;
 import com.example.moein.taskmanager.database.TaskDbSchema;
 
+import org.greenrobot.greendao.database.Database;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,11 +20,22 @@ import java.util.UUID;
 public class TaskLab {
 
     private static TaskLab instance;
-    private SQLiteDatabase mDatabase;
+    private DaoSession mDaoSession;
+    private Database mDatabase;
+    private TaskDao mTaskDao;
+//    private SQLiteDatabase mDatabase;
 
     private TaskLab(Context context) {
-        Context context1 = context.getApplicationContext();
-        mDatabase = new TaskBaseHelper(context1).getWritableDatabase();
+
+        context = context.getApplicationContext();
+        TaskBaseHelper taskBaseHelper = new TaskBaseHelper(context,"tasks.db");
+        mDatabase = taskBaseHelper.getWritableDb();
+
+        mDaoSession = new DaoMaster(mDatabase).newSession();
+
+        mTaskDao = mDaoSession.getTaskDao();
+//        Context context1 = context.getApplicationContext();
+//        mDatabase = new TaskBaseHelper(context1).getWritableDatabase();
     }
 
     public static TaskLab getInstance(Context context){
@@ -32,104 +45,132 @@ public class TaskLab {
     }
 
     public void addTask(Task task){
-        ContentValues values = getContentValues(task);
-        mDatabase.insert(TaskDbSchema.TaskTable.NAME, null, values);
+
+        mTaskDao.insert(task);
+//        ContentValues values = getContentValues(task);
+//        mDatabase.insert(TaskDbSchema.TaskTable.NAME, null, values);
     }
 
     public void updateTask(Task task) {
-        ContentValues values = getContentValues(task);
-        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ? ";
-        mDatabase.update(TaskDbSchema.TaskTable.NAME, values,
-                whereClause, new String[]{task.getId().toString()});
+
+        mTaskDao.update(task);
+//        ContentValues values = getContentValues(task);
+//        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ? ";
+//        mDatabase.update(TaskDbSchema.TaskTable.NAME, values,
+//                whereClause, new String[]{task.getId().toString()});
     }
 
     public void deleteTask(Task task){
-        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ?";
-        String[] whereArgs = new String[]{task.getId().toString()};
-        mDatabase.delete(TaskDbSchema.TaskTable.NAME,whereClause,whereArgs);
+
+        mTaskDao.delete(task);
+//        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ?";
+//        String[] whereArgs = new String[]{task.getId().toString()};
+//        mDatabase.delete(TaskDbSchema.TaskTable.NAME,whereClause,whereArgs);
     }
 
-    public List<Task> getTasks(UUID userId,int done) {
+    public List<Task> getTasks(Long userId,int done) {
+
         List<Task> tasks = new ArrayList<>();
-        String whereClause = null;
-        String[] whereArgs = null;
+
+
         if (done == 0){
-            whereClause = TaskDbSchema.TaskTable.Cols.USER_ID + " = ?";
-            whereArgs = new String[]{userId.toString()};
+            tasks = mTaskDao.queryBuilder()
+                    .where(TaskDao.Properties.MUserId.eq(userId))
+                    .list();
         }else if (done == 1){
-            whereClause = TaskDbSchema.TaskTable.Cols.USER_ID + " = ? AND " + TaskDbSchema.TaskTable.Cols.DONE + " = 1";
-            whereArgs = new String[]{userId.toString()};
+            tasks = mTaskDao.queryBuilder()
+                    .where(TaskDao.Properties.MUserId.eq(userId))
+                    .where(TaskDao.Properties.MDone.eq(true))
+                    .list();
         }else if (done == 2){
-            whereClause = TaskDbSchema.TaskTable.Cols.USER_ID + " = ? AND " + TaskDbSchema.TaskTable.Cols.DONE + " = 0";
-            whereArgs = new String[]{userId.toString()};
+            tasks = mTaskDao.queryBuilder()
+                    .where(TaskDao.Properties.MUserId.eq(userId))
+                    .where(TaskDao.Properties.MDone.eq(false))
+                    .list();
         }
-
-        TaskCursorWrapper taskCursorWrapper = queryTask(whereClause, whereArgs);
-
-        try {
-            if (taskCursorWrapper.getCount() == 0)
-                return tasks;
-
-            taskCursorWrapper.moveToFirst();
-            while (!taskCursorWrapper.isAfterLast()) {
-                tasks.add(taskCursorWrapper.getTask());
-                taskCursorWrapper.moveToNext();
-            }
-        } finally {
-            taskCursorWrapper.close();
-        }
-
         return tasks;
+//        List<Task> tasks = new ArrayList<>();
+//        String whereClause = null;
+//        String[] whereArgs = null;
+//        if (done == 0){
+//            whereClause = TaskDbSchema.TaskTable.Cols.USER_ID + " = ?";
+//            whereArgs = new String[]{userId.toString()};
+//        }else if (done == 1){
+//            whereClause = TaskDbSchema.TaskTable.Cols.USER_ID + " = ? AND " + TaskDbSchema.TaskTable.Cols.DONE + " = 1";
+//            whereArgs = new String[]{userId.toString()};
+//        }else if (done == 2){
+//            whereClause = TaskDbSchema.TaskTable.Cols.USER_ID + " = ? AND " + TaskDbSchema.TaskTable.Cols.DONE + " = 0";
+//            whereArgs = new String[]{userId.toString()};
+//        }
+//
+//        TaskCursorWrapper taskCursorWrapper = queryTask(whereClause, whereArgs);
+//
+//        try {
+//            if (taskCursorWrapper.getCount() == 0)
+//                return tasks;
+//
+//            taskCursorWrapper.moveToFirst();
+//            while (!taskCursorWrapper.isAfterLast()) {
+//                tasks.add(taskCursorWrapper.getTask());
+//                taskCursorWrapper.moveToNext();
+//            }
+//        } finally {
+//            taskCursorWrapper.close();
+//        }
+//
+//        return tasks;
     }
 
-    public Task getTask(UUID id){
-        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ?";
-        String[] whereArgs = new String[]{id.toString()};
+    public Task getTask(Long id){
 
-        TaskCursorWrapper taskCursorWrapper = queryTask(whereClause, whereArgs);
-
-        try {
-            if (taskCursorWrapper.getCount() == 0)
-                return null;
-
-            taskCursorWrapper.moveToFirst();
-            return taskCursorWrapper.getTask();
-        } finally {
-            taskCursorWrapper.close();
-        }
+        return mTaskDao.load(id);
+//        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ?";
+//        String[] whereArgs = new String[]{id.toString()};
+//
+//        TaskCursorWrapper taskCursorWrapper = queryTask(whereClause, whereArgs);
+//
+//        try {
+//            if (taskCursorWrapper.getCount() == 0)
+//                return null;
+//
+//            taskCursorWrapper.moveToFirst();
+//            return taskCursorWrapper.getTask();
+//        } finally {
+//            taskCursorWrapper.close();
+//        }
     }
 
-    private TaskCursorWrapper queryTask(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
-                TaskDbSchema.TaskTable.NAME,
-                null,
-                whereClause,
-                whereArgs,
-                null,
-                null,
-                null);
+//    private TaskCursorWrapper queryTask(String whereClause, String[] whereArgs) {
+//        Cursor cursor = mDatabase.query(
+//                TaskDbSchema.TaskTable.NAME,
+//                null,
+//                whereClause,
+//                whereArgs,
+//                null,
+//                null,
+//                null);
+//
+//        return new TaskCursorWrapper(cursor);
+//    }
 
-        return new TaskCursorWrapper(cursor);
-    }
-
-    public ContentValues getContentValues(Task task) {
-        ContentValues values = new ContentValues();
-        values.put(TaskDbSchema.TaskTable.Cols.UUID, task.getId().toString());
-        values.put(TaskDbSchema.TaskTable.Cols.TITLE, task.getTitle());
-        values.put(TaskDbSchema.TaskTable.Cols.DESCRIPTIONS, task.getDescriptions());
-        try{
-            values.put(TaskDbSchema.TaskTable.Cols.DATE, task.getDate().getTime());
-            values.put(TaskDbSchema.TaskTable.Cols.TIME, task.getTime().getTime());
-        }catch (Exception e){
-            Log.e("TaskLab","",e);
-            e.printStackTrace();
-        }
-
-        values.put(TaskDbSchema.TaskTable.Cols.DONE, task.isDone() ? 1 : 0);
-        values.put(TaskDbSchema.TaskTable.Cols.COLOR, task.getColor());
-        values.put(TaskDbSchema.TaskTable.Cols.ICON_COLOR, task.getIconColor());
-        values.put(TaskDbSchema.TaskTable.Cols.USER_ID, task.getUserId().toString());
-
-        return values;
-    }
+//    public ContentValues getContentValues(Task task) {
+//        ContentValues values = new ContentValues();
+//        values.put(TaskDbSchema.TaskTable.Cols.UUID, task.getId().toString());
+//        values.put(TaskDbSchema.TaskTable.Cols.TITLE, task.getTitle());
+//        values.put(TaskDbSchema.TaskTable.Cols.DESCRIPTIONS, task.getDescriptions());
+//        try{
+//            values.put(TaskDbSchema.TaskTable.Cols.DATE, task.getDate().getTime());
+//            values.put(TaskDbSchema.TaskTable.Cols.TIME, task.getTime().getTime());
+//        }catch (Exception e){
+//            Log.e("TaskLab","",e);
+//            e.printStackTrace();
+//        }
+//
+//        values.put(TaskDbSchema.TaskTable.Cols.DONE, task.isDone() ? 1 : 0);
+//        values.put(TaskDbSchema.TaskTable.Cols.COLOR, task.getColor());
+//        values.put(TaskDbSchema.TaskTable.Cols.ICON_COLOR, task.getIconColor());
+//        values.put(TaskDbSchema.TaskTable.Cols.USER_ID, task.getUserId().toString());
+//
+//        return values;
+//    }
 }

@@ -28,9 +28,9 @@ public class LoginAlertFragment extends DialogFragment {
     private TextView mTextView;
     private Button mCreateButton;
     private Button mCancelButton;
-    private UUID mUserId;
+    private Long mUserId;
 
-    public static LoginAlertFragment newInstance(UUID userId) {
+    public static LoginAlertFragment newInstance(Long userId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER_ID,userId);
         LoginAlertFragment fragment = new LoginAlertFragment();
@@ -46,7 +46,7 @@ public class LoginAlertFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserId = (UUID) getArguments().getSerializable(ARG_USER_ID);
+        mUserId = (Long) getArguments().getSerializable(ARG_USER_ID);
     }
 
     @Override

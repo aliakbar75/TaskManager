@@ -5,32 +5,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
-public class TaskBaseHelper extends SQLiteOpenHelper {
-    public TaskBaseHelper(Context context) {
-        super(context, TaskDbSchema.NAME, null, TaskDbSchema.VERSION);
+import com.example.moein.taskmanager.models.DaoMaster;
+
+import org.greenrobot.greendao.database.Database;
+
+public class TaskBaseHelper extends DaoMaster.DevOpenHelper {
+
+    public TaskBaseHelper(Context context, String name) {
+        super(context, name);
+    }
+
+    public TaskBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory) {
+        super(context, name, factory);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        db.execSQL("create table " + TaskDbSchema.TaskTable.NAME + "(" +
-                "_id integer primary key autoincrement, " +
-                TaskDbSchema.TaskTable.Cols.UUID + ", " +
-                TaskDbSchema.TaskTable.Cols.TITLE + ", " +
-                TaskDbSchema.TaskTable.Cols.DESCRIPTIONS + ", " +
-                TaskDbSchema.TaskTable.Cols.DATE + ", " +
-                TaskDbSchema.TaskTable.Cols.TIME + ", " +
-                TaskDbSchema.TaskTable.Cols.DONE + ", " +
-                TaskDbSchema.TaskTable.Cols.COLOR + ", " +
-                TaskDbSchema.TaskTable.Cols.ICON_COLOR + ", " +
-                TaskDbSchema.TaskTable.Cols.USER_ID +
-                ")"
-        );
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+    public void onUpgrade(Database db, int oldVersion, int newVersion) {
+        super.onUpgrade(db, oldVersion, newVersion);
     }
 }
+
