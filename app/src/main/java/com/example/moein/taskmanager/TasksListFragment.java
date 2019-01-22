@@ -51,6 +51,7 @@ public class TasksListFragment extends Fragment {
     private ImageView mEmptyImageView;
     private List<Task> mTasks;
     private String mSearchText;
+    private Long mUserId;
 
     public static TasksListFragment newInstance(int tabType,Long userId) {
         
@@ -72,7 +73,7 @@ public class TasksListFragment extends Fragment {
 
         mSearchText = "";
         setHasOptionsMenu(true);
-
+        mUserId = (Long) getArguments().getSerializable(ARG_USER_ID);
 
     }
 
@@ -106,8 +107,8 @@ public class TasksListFragment extends Fragment {
             deleteAlertFragment.setTargetFragment(TasksListFragment.this,REQ_DELETE);
             deleteAlertFragment.show(getFragmentManager(),DIALOG_DELETE_ALERT);
         }else if (item.getItemId() == R.id.search_tasks){
-            SearchDialogFragment searchDialogFragment = SearchDialogFragment.newInstance();
-            searchDialogFragment.setTargetFragment(TasksListFragment.this,REQ_SEARCH);
+            SearchDialogFragment searchDialogFragment = SearchDialogFragment.newInstance(mUserId);
+//            searchDialogFragment.setTargetFragment(TasksListFragment.this,REQ_SEARCH);
             searchDialogFragment.show(getFragmentManager(),DIALOG_SEARCH_ALERT);
         }
 
@@ -123,13 +124,13 @@ public class TasksListFragment extends Fragment {
         TaskLab taskLab = TaskLab.getInstance(getActivity());
         switch (tabType){
             case ALL_TASKS:
-                mTasks = taskLab.getTasks(userId,ALL_TASKS,mSearchText);
+                mTasks = taskLab.getTasks(userId);
                 break;
             case DONE_TASKS:
-                mTasks = taskLab.getTasks(userId,DONE_TASKS,mSearchText);
+                mTasks = taskLab.getTasks(userId,true);
                 break;
             case UNDONE_tASKS:
-                mTasks = taskLab.getTasks(userId,UNDONE_tASKS,mSearchText);
+                mTasks = taskLab.getTasks(userId,false);
                 break;
         }
 
@@ -159,10 +160,11 @@ public class TasksListFragment extends Fragment {
                 }
                 onResume();
             }
-        }else if (requestCode == REQ_SEARCH){
-            mSearchText = data.getStringExtra(SearchDialogFragment.EXTRA_SEARCH);
-            ((TasksActivity) getActivity()).onResume();
         }
+//        else if (requestCode == REQ_SEARCH){
+//            mSearchText = data.getStringExtra(SearchDialogFragment.EXTRA_SEARCH);
+//            ((TasksActivity) getActivity()).onResume();
+//        }
     }
 
     private void setAdapter() {

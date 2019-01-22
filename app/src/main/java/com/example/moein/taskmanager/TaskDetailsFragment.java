@@ -206,10 +206,13 @@ public class TaskDetailsFragment extends DialogFragment {
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
         try {
-            String formattedDate = simpleDateFormat.format(mTask.getMDate());
-            String formattedTime = simpleTimeFormat.format(mTask.getMTime());
-            mDateTextView.setText("Date :  " + formattedDate);
-            mTimeTextView.setText("Time :  " + formattedTime);
+            String formattedDate = new SimpleDateFormat("yyyy/MM/dd").format(mTask.getMDate());
+            String formattedTime = new SimpleDateFormat("HH:mm").format(mTask.getMTime());
+
+//            String formattedDate = simpleDateFormat.format(mTask.getMDate());
+//            String formattedTime = simpleTimeFormat.format(mTask.getMTime());
+            mDateTextView.setText(getString(R.string.show_date,formattedDate));
+            mTimeTextView.setText(getString(R.string.show_time,formattedTime));
         }catch (Exception e){
         }
     }

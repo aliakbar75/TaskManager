@@ -163,6 +163,11 @@ public class AddTaskFragment extends DialogFragment {
         mTaskImage = view.findViewById(R.id.task_image_view);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void configureColors() {
         makeLightColors();
         makeDarkColors();
@@ -258,6 +263,7 @@ public class AddTaskFragment extends DialogFragment {
             date = new SimpleDateFormat("yyyy/MM/dd").parse(stringDate);
             time = new SimpleDateFormat("HH:mm").parse(stringTime);
         }catch (Exception e){
+            e.printStackTrace();
         }
 
         if(title.length() != 0){

@@ -12,6 +12,7 @@ import com.example.moein.taskmanager.database.TaskCursorWrapper;
 import com.example.moein.taskmanager.database.TaskDbSchema;
 
 import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class TaskLab {
+
+    private static final int ALL_TASKS = 0;
+    private static final int DONE_TASKS = 1;
+    private static final int UNDONE_tASKS = 2;
 
     private static TaskLab instance;
     private DaoSession mDaoSession;
@@ -77,30 +82,37 @@ public class TaskLab {
 //        mDatabase.delete(TaskDbSchema.TaskTable.NAME,whereClause,whereArgs);
     }
 
-    public List<Task> getTasks(Long userId,int done,String searchText) {
+    public  List<Task> search(Long userId,String searchTitleText,String searchDescriptionText){
+        List<Task> tasks = new ArrayList<>();
+        QueryBuilder qb=mTaskDao.queryBuilder();
+
+                qb.where(TaskDao.Properties.MUserId.eq(userId));
+                qb.where(TaskDao.Properties.MTitle.like("%" + searchTitleText + "%"),
+                        TaskDao.Properties.MDescriptions.like("%" + searchDescriptionText + "%"));
+                tasks=qb.list();
+                return tasks;
+    }
+
+    public List<Task> getTasks (Long userId){
+        return mTaskDao.queryBuilder()
+                .where(TaskDao.Properties.MUserId.eq(userId))
+                .list();
+    }
+
+    public List<Task> getTasks(Long userId,boolean done) {
 
         List<Task> tasks = new ArrayList<>();
 
 
-        if (done == 0){
-            tasks = mTaskDao.queryBuilder()
-                    .where(TaskDao.Properties.MUserId.eq(userId))
-                    .where(TaskDao.Properties.MTitle.like("%" + searchText + "%"))
-                    .where(TaskDao.Properties.MDescriptions.like("%" + searchText + "%"))
-                    .list();
-        }else if (done == 1){
+        if (done){
             tasks = mTaskDao.queryBuilder()
                     .where(TaskDao.Properties.MUserId.eq(userId))
                     .where(TaskDao.Properties.MDone.eq(true))
-                    .where(TaskDao.Properties.MTitle.like("%" + searchText + "%"))
-                    .where(TaskDao.Properties.MDescriptions.like("%" + searchText + "%"))
                     .list();
-        }else if (done == 2){
+        }else{
             tasks = mTaskDao.queryBuilder()
                     .where(TaskDao.Properties.MUserId.eq(userId))
                     .where(TaskDao.Properties.MDone.eq(false))
-                    .where(TaskDao.Properties.MTitle.like("%" + searchText + "%"))
-                    .where(TaskDao.Properties.MDescriptions.like("%" + searchText + "%"))
                     .list();
         }
         return tasks;
