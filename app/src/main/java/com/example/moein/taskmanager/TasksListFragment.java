@@ -42,12 +42,15 @@ public class TasksListFragment extends Fragment {
     private static final String TAB_TYPE = "tab_type";
     private static final String ARG_USER_ID = "user_id";
     private static final int REQ_DELETE = 2;
+    private static final int REQ_SEARCH = 3;
     private static final String DIALOG_DELETE_ALERT = "delete_alert";
+    private static final String DIALOG_SEARCH_ALERT = "search";
     private RecyclerView mTasksRecyclerView;
     private TasksAdapter mTasksAdapter;
     private TextView mEmptyTextView;
     private ImageView mEmptyImageView;
     private List<Task> mTasks;
+    private String mSearchText;
 
     public static TasksListFragment newInstance(int tabType,Long userId) {
         
@@ -67,23 +70,10 @@ public class TasksListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Long userId = (Long) getArguments().getSerializable(ARG_USER_ID);
-
+        mSearchText = "";
         setHasOptionsMenu(true);
 
-        int tabType = getArguments().getInt(TAB_TYPE);
-        TaskLab taskLab = TaskLab.getInstance(getActivity());
-        switch (tabType){
-            case ALL_TASKS:
-                mTasks = taskLab.getTasks(userId,ALL_TASKS);
-                break;
-            case DONE_TASKS:
-                mTasks = taskLab.getTasks(userId,DONE_TASKS);
-                break;
-            case UNDONE_tASKS:
-                mTasks = taskLab.getTasks(userId,UNDONE_tASKS);
-                break;
-        }
+
     }
 
     @Override
@@ -111,15 +101,37 @@ public class TasksListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        DeleteAlertFragment deleteAlertFragment = DeleteAlertFragment.newInstance();
-        deleteAlertFragment.setTargetFragment(TasksListFragment.this,REQ_DELETE);
-        deleteAlertFragment.show(getFragmentManager(),DIALOG_DELETE_ALERT);
+        if (item.getItemId() == R.id.delete_all_tasks){
+            DeleteAlertFragment deleteAlertFragment = DeleteAlertFragment.newInstance();
+            deleteAlertFragment.setTargetFragment(TasksListFragment.this,REQ_DELETE);
+            deleteAlertFragment.show(getFragmentManager(),DIALOG_DELETE_ALERT);
+        }else if (item.getItemId() == R.id.search_tasks){
+            SearchDialogFragment searchDialogFragment = SearchDialogFragment.newInstance();
+            searchDialogFragment.setTargetFragment(TasksListFragment.this,REQ_SEARCH);
+            searchDialogFragment.show(getFragmentManager(),DIALOG_SEARCH_ALERT);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        Long userId = (Long) getArguments().getSerializable(ARG_USER_ID);
+        int tabType = getArguments().getInt(TAB_TYPE);
+        TaskLab taskLab = TaskLab.getInstance(getActivity());
+        switch (tabType){
+            case ALL_TASKS:
+                mTasks = taskLab.getTasks(userId,ALL_TASKS,mSearchText);
+                break;
+            case DONE_TASKS:
+                mTasks = taskLab.getTasks(userId,DONE_TASKS,mSearchText);
+                break;
+            case UNDONE_tASKS:
+                mTasks = taskLab.getTasks(userId,UNDONE_tASKS,mSearchText);
+                break;
+        }
 
         Log.d("hhhhhhh", "onResume");
         setAdapter();
@@ -145,8 +157,11 @@ public class TasksListFragment extends Fragment {
                 for (Task task : mTasks){
                     TaskLab.getInstance(getActivity()).deleteTask(task);
                 }
-                ((TasksActivity) getActivity()).onResume();
+                onResume();
             }
+        }else if (requestCode == REQ_SEARCH){
+            mSearchText = data.getStringExtra(SearchDialogFragment.EXTRA_SEARCH);
+            ((TasksActivity) getActivity()).onResume();
         }
     }
 

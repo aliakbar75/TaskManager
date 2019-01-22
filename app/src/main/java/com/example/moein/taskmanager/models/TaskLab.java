@@ -77,7 +77,7 @@ public class TaskLab {
 //        mDatabase.delete(TaskDbSchema.TaskTable.NAME,whereClause,whereArgs);
     }
 
-    public List<Task> getTasks(Long userId,int done) {
+    public List<Task> getTasks(Long userId,int done,String searchText) {
 
         List<Task> tasks = new ArrayList<>();
 
@@ -85,16 +85,22 @@ public class TaskLab {
         if (done == 0){
             tasks = mTaskDao.queryBuilder()
                     .where(TaskDao.Properties.MUserId.eq(userId))
+                    .where(TaskDao.Properties.MTitle.like("%" + searchText + "%"))
+                    .where(TaskDao.Properties.MDescriptions.like("%" + searchText + "%"))
                     .list();
         }else if (done == 1){
             tasks = mTaskDao.queryBuilder()
                     .where(TaskDao.Properties.MUserId.eq(userId))
                     .where(TaskDao.Properties.MDone.eq(true))
+                    .where(TaskDao.Properties.MTitle.like("%" + searchText + "%"))
+                    .where(TaskDao.Properties.MDescriptions.like("%" + searchText + "%"))
                     .list();
         }else if (done == 2){
             tasks = mTaskDao.queryBuilder()
                     .where(TaskDao.Properties.MUserId.eq(userId))
                     .where(TaskDao.Properties.MDone.eq(false))
+                    .where(TaskDao.Properties.MTitle.like("%" + searchText + "%"))
+                    .where(TaskDao.Properties.MDescriptions.like("%" + searchText + "%"))
                     .list();
         }
         return tasks;
