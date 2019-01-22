@@ -94,6 +94,50 @@
         android:background="@color/cancel_button"
         android:textColor="@android:color/white"/>
 
+    <ImageView
+        android:id="@+id/task_image_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="@dimen/big_dp"
+        android:layout_marginTop="@dimen/big_dp"
+        android:layout_marginRight="@dimen/small_dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/color_spinner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/take_picture_button"
+        android:cropToPadding="true"
+        android:scaleType="centerInside" />
+
+    <Button
+        android:text="take picture"
+        android:id="@+id/take_picture_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/task_image_view"
+        app:layout_constraintTop_toTopOf="@+id/task_image_view"
+        app:layout_constraintBottom_toBottomOf="@id/task_image_view"
+        app:layout_constraintRight_toLeftOf="@id/choose_picture_button"
+        android:layout_marginTop="@dimen/medium_dp"
+        android:layout_marginRight="@dimen/small_dp"
+        android:layout_marginLeft="@dimen/small_dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:text="choose picture"
+        android:id="@+id/choose_picture_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/take_picture_button"
+        app:layout_constraintTop_toTopOf="@+id/task_image_view"
+        app:layout_constraintBottom_toBottomOf="@id/task_image_view"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/big_dp"
+        android:layout_marginTop="@dimen/medium_dp"
+        android:layout_marginLeft="@dimen/small_dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"/>
+
 
 
 </android.support.constraint.ConstraintLayout>

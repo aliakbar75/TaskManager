@@ -3,12 +3,20 @@ package com.example.moein.taskmanager;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,19 +26,24 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.moein.taskmanager.models.Task;
 import com.example.moein.taskmanager.models.TaskLab;
+import com.example.moein.taskmanager.utils.PictureUtils;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.UUID;
+import java.util.List;
 
 
 /**
@@ -43,6 +56,8 @@ public class AddTaskFragment extends DialogFragment {
     private static final String KEY_TIME = "time";
     private static final String ARG_USER_ID = "userId";
     private static final String DATE_PICKER = "date_picker";
+    private static final int REQ_TAKE_PHOTOS = 0;
+    private static final int REQ_PICK_IMAGE = 1 ;
 
     private ConstraintLayout mConstraintLayout;
     private EditText mTitleEditText;
@@ -52,6 +67,10 @@ public class AddTaskFragment extends DialogFragment {
 
     private Button mSaveButton;
     private Button mCancelButton;
+    private Button mTakePictureButton;
+    private Button mChoosePictureButton;
+
+    private ImageView mTaskImage;
 
     private Spinner mColorSpinner;
 
@@ -61,6 +80,10 @@ public class AddTaskFragment extends DialogFragment {
     private Long mUserId;
 
     private Date mDate;
+
+    private Task mTask;
+
+    private File mPhotoFile;
 
     private String stringDate;
     private String stringTime;
@@ -95,7 +118,10 @@ public class AddTaskFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mTask = new Task();
+        TaskLab.getInstance(getActivity()).addTask(mTask);
         mUserId = (Long) getArguments().getSerializable(ARG_USER_ID);
+        mPhotoFile = TaskLab.getInstance(getActivity()).getPhotoFile(mTask);
         if (savedInstanceState != null){
             stringDate = savedInstanceState.getString(KEY_DATE);
             stringTime = savedInstanceState.getString(KEY_TIME);
@@ -119,6 +145,7 @@ public class AddTaskFragment extends DialogFragment {
         dateTimeDialog();
         buttonsListeners();
 
+        updatePhotoView();
         return view;
     }
 
@@ -131,6 +158,9 @@ public class AddTaskFragment extends DialogFragment {
         mCancelButton = view.findViewById(R.id.task_cancel_button);
         mColorSpinner = view.findViewById(R.id.color_spinner);
         mConstraintLayout = view.findViewById(R.id.add_task_fragment);
+        mTakePictureButton = view.findViewById(R.id.take_picture_button);
+        mChoosePictureButton = view.findViewById(R.id.choose_picture_button);
+        mTaskImage = view.findViewById(R.id.task_image_view);
     }
 
     private void configureColors() {
@@ -163,10 +193,60 @@ public class AddTaskFragment extends DialogFragment {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TaskLab.getInstance(getActivity()).deleteTask(mTask);
                 dismiss();
             }
         });
+
+        mTakePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Uri uri = getPhotoFileUri();
+                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+                PackageManager packageManager = getActivity().getPackageManager();
+                List<ResolveInfo> activities = packageManager.queryIntentActivities(
+                        captureIntent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+
+                for (ResolveInfo activity : activities) {
+                    getActivity().grantUriPermission(
+                            activity.activityInfo.packageName,
+                            uri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+
+                startActivityForResult(captureIntent, REQ_TAKE_PHOTOS);
+            }
+        });
+
+        mChoosePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_PICK_IMAGE);
+            }
+        });
+
     }
+
+    private Uri getPhotoFileUri() {
+        return FileProvider.getUriForFile(getActivity(),
+                "com.example.moein.taskmanager.fileprovider",
+                mPhotoFile);
+    }
+
+//    private File getPhotoFile() {
+//        UUID uuid = UUID.randomUUID();
+//        File filesDir = getActivity().getApplicationContext().getFilesDir();
+//        File photoFile = new File(filesDir, uuid.toString());
+//
+//        return photoFile;
+//    }
 
     private void makeTask() {
         String title = mTitleEditText.getText().toString();
@@ -181,15 +261,14 @@ public class AddTaskFragment extends DialogFragment {
         }
 
         if(title.length() != 0){
-            Task task = new Task();
-            task.setMTitle(title);
-            task.setMUserId(mUserId);
-            task.setMDescriptions(description);
-            task.setMDate(mDate);
-            task.setMTime(time);
-            task.setMColor(color);
-            task.setMIconColor(iconColor);
-            TaskLab.getInstance(getActivity()).addTask(task);
+            mTask.setMTitle(title);
+            mTask.setMUserId(mUserId);
+            mTask.setMDescriptions(description);
+            mTask.setMDate(mDate);
+            mTask.setMTime(time);
+            mTask.setMColor(color);
+            mTask.setMIconColor(iconColor);
+            TaskLab.getInstance(getActivity()).updateTask(mTask);
         }
     }
 
@@ -198,6 +277,38 @@ public class AddTaskFragment extends DialogFragment {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_DATE,stringDate);
         outState.putString(KEY_TIME,stringTime);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQ_TAKE_PHOTOS) {
+            Uri uri = getPhotoFileUri();
+            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updatePhotoView();
+        }else if (requestCode == REQ_PICK_IMAGE){
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+                Bitmap bitmap = PictureUtils.getScaledBitmap(imageStream);
+                mTaskImage.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updatePhotoView() {
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mTaskImage.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    mPhotoFile.getPath(),
+                    getActivity());
+
+            mTaskImage.setImageBitmap(bitmap);
+        }
     }
 
     private void dateTimeDialog(){

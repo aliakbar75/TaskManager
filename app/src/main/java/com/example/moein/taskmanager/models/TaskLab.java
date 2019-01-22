@@ -13,6 +13,7 @@ import com.example.moein.taskmanager.database.TaskDbSchema;
 
 import org.greenrobot.greendao.database.Database;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,12 +24,13 @@ public class TaskLab {
     private DaoSession mDaoSession;
     private Database mDatabase;
     private TaskDao mTaskDao;
+    private Context mContext;
 //    private SQLiteDatabase mDatabase;
 
     private TaskLab(Context context) {
 
-        context = context.getApplicationContext();
-        TaskBaseHelper taskBaseHelper = new TaskBaseHelper(context,"tasks.db");
+        mContext = context.getApplicationContext();
+        TaskBaseHelper taskBaseHelper = new TaskBaseHelper(mContext,"tasks.db");
         mDatabase = taskBaseHelper.getWritableDb();
 
         mDaoSession = new DaoMaster(mDatabase).newSession();
@@ -42,6 +44,13 @@ public class TaskLab {
         if (instance == null)
             instance = new TaskLab(context);
         return instance;
+    }
+
+    public File getPhotoFile(Task task) {
+        File filesDir = mContext.getFilesDir();
+        File photoFile = new File(filesDir, task.getPhotoName());
+
+        return photoFile;
     }
 
     public void addTask(Task task){

@@ -22,11 +22,16 @@ public class Task {
     private boolean mDone;
     private int mColor;
     private int mIconColor;
+    private String mPhotoName;
 
     private Long mUserId;
 
     @ToOne(joinProperty = "mUserId")
     private User mUser;
+
+    public String getPhotoName() {
+        return "IMG_" + mId.toString() + ".jpg";
+    }
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -36,9 +41,9 @@ public class Task {
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
 
-    @Generated(hash = 229311900)
-    public Task(Long mId, String mTitle, String mDescriptions, Date mDate,
-            Date mTime, boolean mDone, int mColor, int mIconColor, Long mUserId) {
+    @Generated(hash = 723092530)
+    public Task(Long mId, String mTitle, String mDescriptions, Date mDate, Date mTime,
+            boolean mDone, int mColor, int mIconColor, String mPhotoName, Long mUserId) {
         this.mId = mId;
         this.mTitle = mTitle;
         this.mDescriptions = mDescriptions;
@@ -47,6 +52,7 @@ public class Task {
         this.mDone = mDone;
         this.mColor = mColor;
         this.mIconColor = mIconColor;
+        this.mPhotoName = mPhotoName;
         this.mUserId = mUserId;
     }
 
@@ -192,6 +198,22 @@ public class Task {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+//    public String getMPhotoName() {
+//        return this.mPhotoName;
+//    }
+//
+//    public void setMPhotoName(String mPhotoName) {
+//        this.mPhotoName = mPhotoName;
+//    }
+
+    public String getMPhotoName() {
+        return this.mPhotoName;
+    }
+
+    public void setMPhotoName(String mPhotoName) {
+        this.mPhotoName = mPhotoName;
     }
 
     /** called by internal mechanisms, do not call yourself. */

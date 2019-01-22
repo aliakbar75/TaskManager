@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -16,11 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.moein.taskmanager.models.Task;
 import com.example.moein.taskmanager.models.TaskLab;
+import com.example.moein.taskmanager.utils.PictureUtils;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -47,6 +51,10 @@ public class TaskDetailsFragment extends DialogFragment {
     private Button mDeleteButton;
     private Button mDoneButton;
     private Button mShareButton;
+
+    private ImageView mTaskImageView;
+
+    private File mPhotoFile;
 
     private ConstraintLayout mConstraintLayout;
 
@@ -77,6 +85,7 @@ public class TaskDetailsFragment extends DialogFragment {
 
         Long taskId = (Long) getArguments().getSerializable(ARG_TASK_ID);
         mTask = TaskLab.getInstance(getActivity()).getTask(taskId);
+        mPhotoFile = TaskLab.getInstance(getActivity()).getPhotoFile(mTask);
     }
 
     @Override
@@ -87,6 +96,7 @@ public class TaskDetailsFragment extends DialogFragment {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.task_details_toolbar_title);
 
+//        updatePhotoView();
         findViews(view);
         buttonsListeners();
 
@@ -97,6 +107,18 @@ public class TaskDetailsFragment extends DialogFragment {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    private void updatePhotoView() {
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mTaskImageView.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    mPhotoFile.getPath(),
+                    getActivity());
+
+            mTaskImageView.setImageBitmap(bitmap);
+        }
     }
 
     private void buttonsListeners() {
@@ -172,6 +194,7 @@ public class TaskDetailsFragment extends DialogFragment {
         mDoneButton = view.findViewById(R.id.done_task_button);
         mConstraintLayout = view.findViewById(R.id.task_detail_fragment);
         mShareButton = view.findViewById(R.id.share_task_button);
+        mTaskImageView = view.findViewById(R.id.task_image_view);
     }
 
     private void updateUI() {
