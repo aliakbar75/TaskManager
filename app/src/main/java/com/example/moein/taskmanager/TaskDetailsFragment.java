@@ -3,6 +3,7 @@ package com.example.moein.taskmanager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -58,6 +59,12 @@ public class TaskDetailsFragment extends DialogFragment {
 
     private ConstraintLayout mConstraintLayout;
 
+    private Callbacks mCallbacks;
+
+    public interface Callbacks{
+        void updateUI();
+    }
+
     public static TaskDetailsFragment newInstance(Long taskId) {
         
         Bundle args = new Bundle();
@@ -70,6 +77,23 @@ public class TaskDetailsFragment extends DialogFragment {
 
     public TaskDetailsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Callbacks)
+            mCallbacks = (Callbacks) context;
+        else
+            throw new RuntimeException("Callbacks not impl");
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     @Override
@@ -151,7 +175,7 @@ public class TaskDetailsFragment extends DialogFragment {
                 mTask.setMDone(true);
                 TaskLab.getInstance(getActivity()).updateTask(mTask);
                 dismiss();
-                ((TasksActivity) getActivity()).onResume();
+                mCallbacks.updateUI();
             }
         });
 
@@ -229,7 +253,7 @@ public class TaskDetailsFragment extends DialogFragment {
             if (isDeleted){
                 TaskLab.getInstance(getActivity()).deleteTask(mTask);
                 dismiss();
-                ((TasksActivity) getActivity()).onResume();
+                mCallbacks.updateUI();
             }
         }
 

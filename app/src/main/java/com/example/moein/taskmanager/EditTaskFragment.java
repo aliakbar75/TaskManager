@@ -3,6 +3,7 @@ package com.example.moein.taskmanager;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -65,6 +66,12 @@ public class EditTaskFragment extends DialogFragment {
     private int[] lightColors = new int[6];
     private int[] darkColors = new int[6];
 
+    private Callbacks mCallbacks;
+
+    public interface Callbacks{
+        void updateUI();
+    }
+
     public static EditTaskFragment newInstance(Long taskId) {
 
         Bundle args = new Bundle();
@@ -77,6 +84,23 @@ public class EditTaskFragment extends DialogFragment {
     public EditTaskFragment() {
         // Required empty public constructor
     }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Callbacks)
+            mCallbacks = (Callbacks) context;
+        else
+            throw new RuntimeException("Callbacks not impl");
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
 
     @Override
     public void onStart() {
@@ -200,7 +224,7 @@ public class EditTaskFragment extends DialogFragment {
                 }
 
                 dismiss();
-                ((TasksActivity) getActivity()).onResume();
+                mCallbacks.updateUI();
             }
         });
 

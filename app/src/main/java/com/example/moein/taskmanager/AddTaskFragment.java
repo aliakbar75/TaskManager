@@ -3,6 +3,7 @@ package com.example.moein.taskmanager;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -94,6 +95,12 @@ public class AddTaskFragment extends DialogFragment {
     private int[] lightColors = new int[6];
     private int[] darkColors = new int[6];
 
+    private Callbacks mCallbacks;
+
+    public interface Callbacks{
+        void updateUI();
+    }
+
     public static AddTaskFragment newInstance(Long userId) {
         
         Bundle args = new Bundle();
@@ -164,6 +171,23 @@ public class AddTaskFragment extends DialogFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Callbacks)
+            mCallbacks = (Callbacks) context;
+        else
+            throw new RuntimeException("Callbacks not impl");
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
     }
@@ -191,7 +215,7 @@ public class AddTaskFragment extends DialogFragment {
             public void onClick(View view) {
                 makeTask();
                 dismiss();
-                ((TasksActivity) getActivity()).onResume();
+                mCallbacks.updateUI();
             }
         });
 

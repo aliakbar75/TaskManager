@@ -22,7 +22,7 @@ import com.example.moein.taskmanager.models.UserLab;
 
 import java.util.UUID;
 
-public class TasksActivity extends AppCompatActivity {
+public class TasksActivity extends AppCompatActivity implements AddTaskFragment.Callbacks,EditTaskFragment.Callbacks,TaskDetailsFragment.Callbacks{
 
     private static final String EXTRA_USER_ID = "com.example.moein.taskmanager.user_id";
     private static final String DIALOG_ADD_TASK = "add_task";
@@ -125,5 +125,10 @@ public class TasksActivity extends AppCompatActivity {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void updateUI() {
+        onResume();
     }
 }
